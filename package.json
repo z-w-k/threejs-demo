@@ -12,12 +12,18 @@
     "@vue/babel-helper-vue-jsx-merge-props": "^1.4.0",
     "@vue/babel-preset-jsx": "^1.4.0",
     "ant-design-vue": "^3.2.17",
-    "vue": "^3.2.47"
+    "pinia": "^2.0.34",
+    "vue": "^3.2.47",
+    "vue-router": "^4.1.6"
   },
   "devDependencies": {
     "@iconify/json": "^2.2.49",
     "@vitejs/plugin-vue": "^4.1.0",
     "@vitejs/plugin-vue-jsx": "^3.0.1",
+    "@vue/runtime-core": "^3.2.47",
+    "autoprefixer": "^10.4.14",
+    "postcss": "^8.4.21",
+    "tailwindcss": "^3.3.1",
     "typescript": "^4.9.3",
     "unplugin-auto-import": "^0.15.2",
     "unplugin-icons": "^0.16.1",

@@ -1,5 +1,4 @@
 import { defineConfig } from "vite";
-import vue from "@vitejs/plugin-vue";
 import vueJsx from "@vitejs/plugin-vue-jsx";
 import AutoImport from "unplugin-auto-import/vite";
 import Components from "unplugin-vue-components/vite";
@@ -9,29 +8,42 @@ import IconsResolver from 'unplugin-icons/resolver'
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
-    vue(),
     vueJsx({enableObjectSlots:true}),
     AutoImport({
-      imports: ["vue"],
       include: [
-        /\.[tj]sx?$/, // .ts, .tsx, .js, .jsx
-        /\.vue$/,
-        /\.vue\?vue/, // .vue
-        /\.md$/, // .md
+        /\.[tj]sx?$/, 
+        /\.vue$/, 
+        /\.vue\?vue/, 
+        /\.md$/,
       ],
       dts:'src/auto-imports.d.ts',
+      imports: [
+        "vue",{
+        "vue-router":[
+          'useLink',
+            'useRoute',
+            'useRouter',
+            'onBeforeRouteLeave',
+            'onBeforeRouteUpdate',
+            'createRouter',
+            'createWebHashHistory',
+        ]
+      },
+      "pinia"
+    ],
+
     }),
     Components({
       include: [
-        /\.tsx$/, // .ts, .tsx, .js, .jsx
-        /\.vue$/,
-        /\.vue\?vue/, // .vue
-        /\.md$/, // .md
+        /\.[tj]sx?$/, 
+        /\.vue$/, 
+        /\.vue\?vue/, 
+        /\.md$/,
       ],
-      extensions: ['vue', 'tsx'],
-      dirs:['src/components/'],
-      dts: 'src/components.d.ts',
-      resolvers: [AntDesignVueResolver(),IconsResolver()],
+      extensions: ['tsx'],
+      // dirs:['src/components/'],
+      resolvers: [IconsResolver()],
+      dts:'src/components.d.ts',
     }),
     Icons({
       compiler: 'vue3',

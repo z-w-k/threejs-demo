@@ -1,11 +1,13 @@
-import { ConfigProvider } from "ant-design-vue";
+import { Layout, LayoutContent, LayoutFooter, LayoutHeader } from "ant-design-vue";
+import { RouterView } from "vue-router";
 export default defineComponent({
   render() {
     return (
-      <ConfigProvider>
-        <HelloWorld />
-        <Demo1 />
-      </ConfigProvider>
+      <Layout class="w-[100vw] h-[100vh]">
+        <LayoutHeader >Header</LayoutHeader>
+        <LayoutContent><RouterView/></LayoutContent>
+        <LayoutFooter>Footer</LayoutFooter>
+      </Layout>
     );
   },
 });

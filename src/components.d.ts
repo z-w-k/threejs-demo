@@ -10,10 +10,19 @@ export {}
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
     AButton: typeof import('ant-design-vue/es')['Button']
-    Components: typeof import('./components/index.tsx')['default']
-    Demo1: typeof import('./components/Demo1.vue')['default']
+    ALayout: typeof import('ant-design-vue/es')['Layout']
+    ALayoutContent: typeof import('ant-design-vue/es')['LayoutContent']
+    ALayoutFooter: typeof import('ant-design-vue/es')['LayoutFooter']
+    ALayoutHeader: typeof import('ant-design-vue/es')['LayoutHeader']
+    Demo1: typeof import('./components/demo1/Demo1.tsx')['default']
     Demo2: typeof import('./components/Demo2.tsx')['default']
-    HelloWorld: typeof import('./components/HelloWorld.tsx')['default']
+    Demo3: typeof import('./components/Demo3.tsx')['default']
+    HelloWorld: typeof import('./components/home/home.jsx')['default']
+    Home: typeof import('./components/home/home.tsx')['default']
     IMaterialSymbols2k: typeof import('~icons/material-symbols/2k')['default']
+    'router-link': typeof import('vue-router')['router-link']
+    'router-view': typeof import('vue-router')['router-view']
+    RouterLink: typeof import('vue-router')['RouterLink']
+    RouterView: typeof import('vue-router')['RouterView']
   }
 }
