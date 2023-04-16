@@ -7,6 +7,8 @@ import {
 import { RouterView } from 'vue-router'
 import ThreeScene from './util/ThreeScene'
 import HomePoints from './util/homePoints'
+import Header from './components/header/header'
+import Footer from './components/footer/footer'
 export default defineComponent({
   setup() {
     let threeScene: ThreeScene
@@ -16,6 +18,8 @@ export default defineComponent({
       threeScene = new ThreeScene(homeContainer.value)
       homePoints = new HomePoints(homeContainer.value, threeScene)
       threeScene.camera.position.set(0, 2000, 1000)
+      console.log(homeContainer.value.children);
+      
       animate()
       window.addEventListener('resize', threeScene.onWindowResize)
     })
@@ -33,9 +37,9 @@ export default defineComponent({
   render() {
     return (
       <div ref='homeContainer' class='flex flex-col relative w-[100vw] h-[100vh] text-white'>
-        <div class='absolute top-0 left-[50%] translate-x-[-50%]'>Header</div>
+        <Header class='w-[100%] h-[10%]  border-2 absolute top-0 left-[50%] translate-x-[-50%]'/>
           <RouterView />
-        <div class='absolute bottom-0 left-[50%] translate-x-[-50%]'>Footer</div>
+        <Footer class='w-[100%] h-[10%]  border-2 absolute bottom-0 left-[50%] translate-x-[-50%]'/>
       </div>
     )
   },
