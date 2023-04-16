@@ -1,4 +1,4 @@
-import HelloWorld from "../components/home/home";
+import HomeIndex from "../components/home/homeIndex";
 const childRoute =  import.meta.glob('../components/**/*.router.ts')
 
 const a =Object.keys(childRoute).filter(url=>{
@@ -8,7 +8,7 @@ const a =Object.keys(childRoute).filter(url=>{
 const routes = [
     {
         path:'/',
-        component:HelloWorld,
+        component:HomeIndex,
         children:[]
     }
 ]

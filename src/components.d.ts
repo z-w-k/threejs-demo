@@ -21,6 +21,7 @@ declare module '@vue/runtime-core' {
     Header: typeof import('./components/header/header.tsx')['default']
     HelloWorld: typeof import('./components/home/home.jsx')['default']
     Home: typeof import('./components/home/home.tsx')['default']
+    HomeIndex: typeof import('./components/home/homeIndex.tsx')['default']
     IIconBigCircle: typeof import('~icons/ic/on-big-circle')['default']
     IMaterialSymbols2k: typeof import('~icons/material-symbols/2k')['default']
     IUilCircle: typeof import('~icons/uil/circle')['default']
