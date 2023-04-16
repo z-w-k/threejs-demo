@@ -1,19 +1,16 @@
-import { Button } from 'ant-design-vue'
-import Demo1 from '../demo1/Demo1'
-// import Demo2 from "../Demo2"
-
+import ThreeScene from '../../util/ThreeScene'
+import HomePoints from '../../util/homePoints'
 export default defineComponent({
-  setup() {
-    const homeContainer = ref<HTMLElement | null | string>('123')
-    onMounted(() => {
-      console.log('挂载了')
-    })
-    console.log('setup')
-    return {
-      homeContainer,
-    }
+  setup(props, ctx) {
+
+    
+    
   },
   render() {
-    return <div ref={(tag) => {}}>这是官网</div>
+    return (
+      <div ref='homeContainer' class='w-[100%] h-[100%]'>
+        <div ref='content' class='w-[100%] h-[100%]'></div>
+      </div>
+    )
   },
 })
