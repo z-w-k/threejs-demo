@@ -18,4 +18,5 @@ module.exports = {
     vueIndentScriptAndStyle: false, //不对vue中的script及style标签缩进
     endOfLine: 'lf', //结束行形式
     embeddedLanguageFormatting: 'auto', //对引用代码进行格式化
+    trailingComma: "none"
   }
