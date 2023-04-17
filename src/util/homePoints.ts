@@ -1,7 +1,8 @@
 import * as THREE from 'three'
-abstract class Attrs<T> {
+import ThreeScene from './ThreeScene'
+abstract class Attrs {
   abstract particles: THREE.Points
-  protected SEPARATION: number = 100
+  protected SEPARATION: number = 50
   protected AMOUNTX: number = 50
   protected AMOUNTY: number = 50
   protected numParticles: number = this.AMOUNTX * this.AMOUNTY
@@ -10,23 +11,22 @@ abstract class Attrs<T> {
   protected count: number = 0
   protected i: number = 0
   protected j: number = 0
-  protected mouseX: number = 0
-  protected mouseY: number = 0
+  protected mouseX: number = 2000
+  protected mouseY: number = 2000
   protected windowHalfX: number
   protected windowHalfY: number
-  constructor(protected domElement: HTMLElement, protected threeScene: T) {
+  protected stop: boolean = true
+  constructor(
+    protected domElement: HTMLElement,
+    protected threeScene: ThreeScene,
+  ) {
     this.windowHalfX = domElement.clientWidth
     this.windowHalfY = domElement.clientHeight
   }
 }
-
-interface threeScene {
-  [propName: string]: any
-}
-
-export default class HomePoints<T extends threeScene> extends Attrs<T> {
+export default class HomePoints extends Attrs {
   particles: THREE.Points
-  constructor(domElement: HTMLElement, threeScene: T) {
+  constructor(domElement: HTMLElement, threeScene: ThreeScene) {
     super(domElement, threeScene)
     this.particles = this.initPointsSystem()
   }
@@ -78,12 +78,14 @@ export default class HomePoints<T extends threeScene> extends Attrs<T> {
     this.threeScene.scene.add(points)
     return points
   }
-  addEvent = (stop?: boolean) => {
+  addEvent = (stop: boolean) => {
+    this.stop = stop
     if (!stop) {
-      return this.domElement.addEventListener('pointermove', this.onPointerMove)
+      this.domElement.addEventListener('pointermove', this.onPointerMove)
     } else {
       this.domElement.removeEventListener('pointermove', this.onPointerMove)
     }
+    this.isPlay()
   }
   private onPointerMove = (event: PointerEvent) => {
     if (event.isPrimary === false) return
@@ -94,17 +96,29 @@ export default class HomePoints<T extends threeScene> extends Attrs<T> {
     this.cameraUpdate()
     this.pointsUpdate()
   }
-
+  private isPlay = () => {
+    if(!this.stop){
+      this.SEPARATION = 100
+    }else{
+      this.mouseX= 2000
+      this.mouseY = 2000
+    }
+  }
   private cameraUpdate = () => {
+    // if(this.stop)return
     this.threeScene.camera.position.x +=
       (this.mouseX - this.threeScene.camera.position.x) * 0.05
     this.threeScene.camera.position.y +=
       (-this.mouseY - this.threeScene.camera.position.y) * 0.05
-    this.threeScene.camera.lookAt(this.threeScene.scene.position)
+    this.threeScene.camera.position.z +=
+      (-this.mouseY - this.threeScene.camera.position.y) * 0.05
+    // this.threeScene.camera.lookAt(this.threeScene.scene.position)
     this.threeScene.controls.update()
   }
   private pointsUpdate = () => {
+    // @ts-ignore
     const positions = this.particles.geometry.attributes.position.array
+    // @ts-ignore
     const scales = this.particles.geometry.attributes.scale.array
 
     let i = 0,

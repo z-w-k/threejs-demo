@@ -13,17 +13,18 @@ import Home from './components/home/home'
 export default defineComponent({
   setup() {
     let threeScene: ThreeScene
-    let homePoints: HomePoints<ThreeScene>
+    let homePoints: HomePoints
     const enter = ref<boolean>(false)
     const homeContainer = ref()
-    const isEnter = (isEnter:boolean)=>{
-      console.log(isEnter);
-      
+    const btIsEnter = (isEnter: boolean) => {
+      enter.value = isEnter
+      console.log(isEnter)
+      homePoints.addEvent(!isEnter)
     }
     onMounted(() => {
       threeScene = new ThreeScene(homeContainer.value)
       homePoints = new HomePoints(homeContainer.value, threeScene)
-      threeScene.camera.position.set(0, 2000, 1000)
+      // threeScene.camera.position.set(0, 2000, 1000)
       console.log(homeContainer.value.children)
 
       animate()
@@ -36,24 +37,42 @@ export default defineComponent({
       homePoints.update()
     }
 
-    const home =  <Home class={[' z-10']} onGetEnter={isEnter}  isEnter={enter.value} />
+    const home = (
+      <Home class={[' z-10']} onGetEnter={btIsEnter} isEnter={enter} />
+    )
+    const header = (
+      <Header
+        onHomeIndex={btIsEnter}
+        isHomeIndex={enter}
+        class='w-[100%] h-[10%]  border-2 absolute top-0 left-[50%] translate-x-[-50%]'
+      />
+    )
+    const footer = (
+      <Footer class='w-[100%] h-[10%]  border-2 absolute bottom-0 left-0' />
+    )
+    const main = (
+      <RouterView
+        class={[
+          'absolute top-[50%] left-[0] translate-y-[-50%] h-[80%] w-[100%] flex items-center justify-center text-white',
+        ]}
+      />
+    )
+    const context = [header, main, footer]
     return {
       homeContainer,
       enter,
-      isEnter,
-      home
+      btIsEnter,
+      home,
+      context,
     }
   },
 
   render() {
     return (
-      <div
-        ref='homeContainer'
-        class='flex flex-col relative w-[100vw] h-[100vh] text-white'>
-        <Header class='w-[100%] h-[10%]  border-2 absolute top-0 left-[50%] translate-x-[-50%]' />
-       {this.home}
-        <RouterView class={['absolute top-[30%] left-[0] translate-y-[-50%] h-[80%] w-[100%] flex items-center justify-center text-white']} />
-        <Footer class='w-[100%] h-[10%]  border-2 absolute bottom-0 left-[50%] translate-x-[-50%]' />
+      <div class='relative w-[100vw] h-[100vh] text-white'>
+        <div ref='homeContainer' class='fixed w-[100%] h-[100%]'>
+        {!this.enter ? this.home : this.context}
+        </div>
       </div>
     )
   },
