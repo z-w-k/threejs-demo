@@ -1,5 +1,6 @@
 import * as THREE from 'three'
 import ThreeScene from './ThreeScene'
+import * as _ from 'lodash'
 abstract class Attrs {
   abstract particles: THREE.Points
   protected SEPARATION: number = 50
@@ -105,7 +106,7 @@ export default class HomePoints extends Attrs {
     }
   }
   private cameraUpdate = () => {
-    // if(this.stop)return
+    if(this.stop)return
     this.threeScene.camera.position.x +=
       (this.mouseX - this.threeScene.camera.position.x) * 0.05
     this.threeScene.camera.position.y +=
