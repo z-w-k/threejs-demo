@@ -36,6 +36,7 @@ module.exports = {
         'chore',
         'revert',
         'style',
+        'cssStyle',
         'test'
       ]
     ],
