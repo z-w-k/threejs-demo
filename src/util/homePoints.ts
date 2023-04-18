@@ -80,13 +80,13 @@ export default class HomePoints extends Attrs {
     return points
   }
   addEvent = (stop: boolean) => {
-    this.stop = stop
     if (!stop) {
-      this.domElement.addEventListener('pointermove', this.onPointerMove)
+      // this.domElement.addEventListener('pointermove', this.onPointerMove)
     } else {
-      this.domElement.removeEventListener('pointermove', this.onPointerMove)
+      // this.domElement.removeEventListener('pointermove', this.onPointerMove)
     }
-    this.isPlay()
+    // this.isPlay()
+    this.stop = stop
   }
   private onPointerMove = (event: PointerEvent) => {
     if (event.isPrimary === false) return

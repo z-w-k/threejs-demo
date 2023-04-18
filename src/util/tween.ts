@@ -7,6 +7,25 @@ interface needTime {
   camera: number
 }
 
+const positionSet = {
+  homePosition: {
+    controlsTarget: new Vector3(1, 0, 0),
+    positionTarget: new Vector3(-2000, -2000, -2000),
+    needTime: {
+      camera: 1000 * 2,
+      controls: 1000 * 2
+    }
+  },
+  targetPosition: {
+    controlsTarget: new Vector3(0, 0, 0),
+    positionTarget: new Vector3(500, 3000, 0),
+    needTime: {
+      camera: 1000 * 1,
+      controls: 1000 * 1
+    }
+  }
+}
+
 export default class TweenJS {
   threeScene: ThreeScene
   tween
@@ -17,19 +36,19 @@ export default class TweenJS {
   initTween(
     controlsTarget: THREE.Vector3,
     positionTarget: THREE.Vector3,
-    needTime: needTime,
+    needTime: needTime
   ) {
-
+    console.log(this.threeScene.controls.target)
     const cameraTween = new TWEEN.Tween(this.threeScene.camera.position)
       .to(positionTarget, needTime.camera)
       .easing(TWEEN.Easing.Quadratic.InOut)
-    
+
     const controlsTween = new TWEEN.Tween(this.threeScene.controls.target)
       .to(controlsTarget, needTime.controls)
       .easing(TWEEN.Easing.Quadratic.InOut)
 
     const update = () => {
-        
+      console.log(this.threeScene.controls.target)
       this.threeScene.controls.update()
     }
     cameraTween.onUpdate(update)
@@ -42,5 +61,13 @@ export default class TweenJS {
     tweens.forEach((tween) => {
       tween.start()
     })
+  }
+  flyTo = (propertyKey: keyof typeof positionSet) => {
+    const tweens = this.initTween(
+      positionSet[propertyKey].controlsTarget,
+      positionSet[propertyKey].positionTarget,
+      positionSet[propertyKey].needTime
+    )
+    this.play(tweens)
   }
 }

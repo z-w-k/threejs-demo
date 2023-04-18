@@ -22,17 +22,19 @@ export default defineComponent({
     const homeContainer = ref()
     const btIsEnter = (isEnter: boolean) => {
       enter.value = isEnter
-      console.log(isEnter)
-      homePoints.addEvent(!isEnter)
+      const target = isEnter ? 'targetPosition' : 'homePosition'
+      tweenJS.flyTo(target)
     }
     const init = () => {
       threeScene = new ThreeScene(homeContainer.value)
       homePoints = new HomePoints(homeContainer.value, threeScene)
       tweenJS = new TweenJS(threeScene)
+      // const box = new THREE.Mesh(new THREE.BoxGeometry(1000,1000,1000),new THREE.MeshBasicMaterial({color:'white'}))
+      // threeScene.scene.add(box)
     }
     onMounted(() => {
       init()
-      threeScene.camera.position.set(0, -5000, 1000)
+      threeScene.camera.position.set(2000, -2000, -2000)
       threeScene.controls.target.set(1,0,0)
       threeScene.controls.update()
       animate()
@@ -48,24 +50,6 @@ export default defineComponent({
     }
 
 
-    const targetPosition = {
-      controlsTarget:new THREE.Vector3(500,2000,0),
-      positionTarget:new THREE.Vector3(0,3000,0),
-      needTime:{
-        camera:1000 *3,
-        controls:1000 *3,
-      }
-    } 
-
-    const flyTo = ()=>{
-      console.log(threeScene.controls.target);
-      const tweens= tweenJS.initTween(targetPosition.controlsTarget,targetPosition.positionTarget,targetPosition.needTime)
-      tweenJS.play(tweens)
-    }
-
-    const flyButton = <div class={['absolute top-0 left-0  w-[10%] h-[5%]']}>
-      <Button class={['!text-white !w-[100%] !h-[100%]  !bg-transparent !border-2']} onClick={flyTo}>飞行</Button>
-    </div>
 
     const home = (
       <Home class={[' z-10']} onGetEnter={btIsEnter} isEnter={enter} />
@@ -78,12 +62,12 @@ export default defineComponent({
       />
     )
     const footer = (
-      <Footer class='w-[100%] h-[10%]  border-2 absolute bottom-0 left-0' />
+      <Footer class='pointer-events-none none w-[100%] h-[10%]  border-2 absolute bottom-0 left-0' />
     )
     const main = (
       <RouterView
         class={[
-          'absolute top-[50%] left-[0] translate-y-[-50%] h-[80%] w-[100%] flex items-center justify-center text-white',
+          ' pointer-events-none absolute top-[50%] left-[0] translate-y-[-50%] h-[80%] w-[100%] flex items-center justify-center text-white',
         ]}
       />
     )
@@ -94,7 +78,6 @@ export default defineComponent({
       btIsEnter,
       home,
       context,
-      flyButton
     }
   },
 
@@ -102,7 +85,6 @@ export default defineComponent({
     return (
       <div class='relative w-[100vw] h-[100vh] text-white'>
         <div ref='homeContainer' class='fixed w-[100%] h-[100%]'>
-          {this.flyButton}
           {!this.enter ? this.home : this.context}
         </div>
       </div>
