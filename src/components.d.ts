@@ -14,6 +14,7 @@ declare module '@vue/runtime-core' {
     ALayoutContent: typeof import('ant-design-vue/es')['LayoutContent']
     ALayoutFooter: typeof import('ant-design-vue/es')['LayoutFooter']
     ALayoutHeader: typeof import('ant-design-vue/es')['LayoutHeader']
+    Button: typeof import('./components/utils/button.tsx')['default']
     Demo1: typeof import('./components/demo1/Demo1.tsx')['default']
     Demo2: typeof import('./components/Demo2.tsx')['default']
     Demo3: typeof import('./components/Demo3.tsx')['default']

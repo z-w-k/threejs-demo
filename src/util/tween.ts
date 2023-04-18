@@ -38,7 +38,6 @@ export default class TweenJS {
     positionTarget: THREE.Vector3,
     needTime: needTime
   ) {
-    console.log(this.threeScene.controls.target)
     const cameraTween = new TWEEN.Tween(this.threeScene.camera.position)
       .to(positionTarget, needTime.camera)
       .easing(TWEEN.Easing.Quadratic.InOut)
@@ -48,7 +47,6 @@ export default class TweenJS {
       .easing(TWEEN.Easing.Quadratic.InOut)
 
     const update = () => {
-      console.log(this.threeScene.controls.target)
       this.threeScene.controls.update()
     }
     cameraTween.onUpdate(update)
