@@ -7,7 +7,7 @@ import {
 } from 'ant-design-vue'
 import { RouterView } from 'vue-router'
 import { MainStore } from './store/mainStore'
-import layout from './module/layout/layout'
+import LayoutModule from './module/layout/layout'
 import HomeButton from './module/home/homeButton'
 export default defineComponent({
   setup() {
@@ -27,7 +27,7 @@ export default defineComponent({
         ]}
       />
     )
-    const context = [layout, main]
+    const context = <LayoutModule>{main}</LayoutModule>
 
     const homeContainer = (): JSX.Element => {
       return (
