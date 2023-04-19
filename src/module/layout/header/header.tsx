@@ -1,30 +1,28 @@
-import ButtonList from '../utils/button'
+import ButtonList from '../../utils/button'
 type tagList = Array<object>
 
 export default defineComponent({
   props: {
     onHomeIndex: Function,
-    isHomeIndex: ref<Boolean>
+    isHomeIndex: Boolean
   },
   setup(props, { emit }) {
     let tagList: tagList = [
       {
-        textList: ['01  Intro', 'ThreeOS Z', 'Integrations', 'TZ ID'],
+        textList: [{text:'热力图',path:'/heatMap',position:[3000,1000,0]}, {text:'ThreeOS Z',path:''}, {text:'Integrations',path:''}, {text:'TZ ID',path:''}],
         class:
           '!w-[23%] !h-[50%] hover:!bg-[#fff] hover:!text-black hover:!h-[60%]'
       },
       {
-        textList: ['Launch ThreeOS Z', 'Hub'],
+        textList: [{text:'Launch ThreeOS Z',path:''}, {text:'Hub',path:''}],
         class: `!w-[45%] !h-[70%] !bg-[#0df6ff] hover:!bg-pink-400 !text-black hover:!h-[80%]`
       }
     ]
-    const classDiv = <div class={[' ']}></div>
     const clickIcon = () => {
       emit('homeIndex', !props.isHomeIndex!.value)
     }
 
-    const headerButton: JSX.Element[][] = [[], []]
-    const icon = <div class={'border-2 absolute w-[5vh] h-[5vh] hover:h-[6vh] hover:w-[6vh] transition-all ease-in-out duration-500 hover:translate-x-[100%] '}></div>
+    const icon = <div onClick={clickIcon} class={'border-2 absolute w-[5vh] h-[5vh] hover:h-[6vh] hover:w-[6vh] transition-all ease-in-out duration-500 hover:translate-x-[100%] '}></div>
 
     const iconContainer = (
       <div class='flex-1 h-[100%] border-[1px] border-blue-500 flex items-center pl-[2%]'>

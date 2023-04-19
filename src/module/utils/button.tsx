@@ -1,21 +1,26 @@
 import { Button } from 'ant-design-vue'
 
+interface button{
+  text:string,
+  path:string
+}
 export default defineComponent({
   props: {
     tagList: Object,
     buttonClass: String || Array
   },
   setup(props, { emit }) {
-    const bl = ref(false)
-    const clickBl = () => {
-      bl.value = !bl.value
+    const router = useRouter()
+
+    const clickBl = (button:button) => {
+      router.push(button.path)
     }
 
-    const buttonList = props.tagList!.textList.map((text: string) => {
+    const buttonList = props.tagList!.textList.map((button: button) => {
       //   const strW = '!w-['+buttonWidth.value +'%]'
       return (
         <Button
-          onClick={clickBl}
+          onClick={()=>clickBl(button)}
           class={
             [props.tagList!.class
               ,
@@ -23,7 +28,7 @@ export default defineComponent({
             ]
             // typeof props.buttonClass === 'string' && props.buttonClass
           }>
-          {text}
+          {button.text}
         </Button>
       )
     })
