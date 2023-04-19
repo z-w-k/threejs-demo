@@ -1,5 +1,5 @@
 import ButtonList from '../utils/button'
-type tagList = Array<string[]>
+type tagList = Array<object>
 
 export default defineComponent({
   props: {
@@ -8,54 +8,62 @@ export default defineComponent({
   },
   setup(props, { emit }) {
     let tagList: tagList = [
-      ['01  Intro', 'ThreeOS Z', 'Integrations', 'TZ ID'],
-      ['Launch ThreeOS Z', 'Hub']
+      {
+        textList: ['01  Intro', 'ThreeOS Z', 'Integrations', 'TZ ID'],
+        class:
+          '!w-[23%] !h-[50%] hover:!bg-[#fff] hover:!text-black hover:!h-[60%]'
+      },
+      {
+        textList: ['Launch ThreeOS Z', 'Hub'],
+        class: `!w-[45%] !h-[70%] !bg-[#0df6ff] hover:!bg-pink-400 !text-black hover:!h-[80%]`
+      }
     ]
-
+    const classDiv = <div class={[' ']}></div>
     const clickIcon = () => {
       emit('homeIndex', !props.isHomeIndex!.value)
     }
 
     const headerButton: JSX.Element[][] = [[], []]
-    // const buttonList = tagList.map((list, listIndex) => {
-    //   return (
-    //     <div
-    //       class={[
-    //         'flex items-center',
-    //         listIndex === 0 ? 'h-[30%] border-[1px]' : 'h-[60%] border-[2px]'
-    //       ]}>
-    //       {list.map((text) => {
-    //         return <div class={[listIndex === 0 ? '' : '']}>{text}</div>
-    //       })}
-    //     </div>
-    //   )
-    // })
-    // console.log(buttonList)
+    const icon = <div class={'border-2 absolute w-[5vh] h-[5vh] hover:h-[6vh] hover:w-[6vh] transition-all ease-in-out duration-500 hover:translate-x-[100%] '}></div>
 
-    const icon = (
-      <div class='flex-1 relative h-[100%] border-[1px] border-blue-500 '>
-        <i-uil-circle
-          onClick={clickIcon}
-          class=' absolute left-[10%] top-[50%] translate-y-[-50%] border-[1px] border-red-500 h-[50%] w-[auto]'
-        />
+    const iconContainer = (
+      <div class='flex-1 h-[100%] border-[1px] border-blue-500 flex items-center pl-[2%]'>
+        <div class={'relative w-[20%] h-[60%] border-2 flex items-center'}>
+          {
+            icon
+          }
+        </div>
+        {/* <div class={'absolute  text-black hover:text-white'}></div> */}
       </div>
     )
+    onMounted(()=>{
+      icon.el!.style.background='rgb(255,255,255)'
+      icon.el!.style.background='radial-gradient(circle, rgba(255,255,255,0) 20%, rgba(255,255,255,1) 35%, rgba(255,255,255,1) 50%, rgba(255,255,255,0) 65%)'
+    })    
 
     const navButtonList = (
       <div class='w-[40%] h-[100%] flex items-center justify-around border-[1px] border-red-500'>
-        <ButtonList class={['w-[70%] h-[30%]']} buttonClass={''} tagList={tagList[0]} />
+        <ButtonList
+          class={['w-[70%] h-[100%]']}
+          buttonClass={''}
+          tagList={tagList[0]}
+        />
       </div>
     )
 
     const rightButton = (
       <div class='w-[30%] h-[100%] flex items-center justify-center  border-[1px] border-red-500'>
-        <ButtonList class={['h-[60%] w-[60%]']} buttonClass={''} tagList={tagList[1]} />
+        <ButtonList
+          class={[' w-[70%] h-[100%]']}
+          buttonClass={''}
+          tagList={tagList[1]}
+        />
       </div>
     )
 
     return () => (
       <div class='flex items-center justify-between'>
-        {[icon, navButtonList,rightButton]}
+        {[iconContainer, navButtonList, rightButton]}
       </div>
     )
   }

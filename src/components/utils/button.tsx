@@ -2,28 +2,25 @@ import { Button } from 'ant-design-vue'
 
 export default defineComponent({
   props: {
-    tagList: Array,
+    tagList: Object,
     buttonClass: String || Array
   },
   setup(props, { emit }) {
-    const buttonWidth = Math.floor((100 / props.tagList!.length) )
-    console.log(buttonWidth)
-
     const bl = ref(false)
-    const clickBl = ()=>{
-        bl.value =!bl.value
+    const clickBl = () => {
+      bl.value = !bl.value
     }
 
-    const buttonList = props.tagList!.map((text) => {
-    //   const strW = '!w-['+buttonWidth.value +'%]'
-      const strW = '!w-['+buttonWidth +'%]'
-      console.log(strW);
+    const buttonList = props.tagList!.textList.map((text: string) => {
+      //   const strW = '!w-['+buttonWidth.value +'%]'
       return (
         <Button
-        onClick={clickBl}
+          onClick={clickBl}
           class={
-            [strW
-            , ' !rounded-md !p-0 hover:!border-white !text-white !bg-transparent  !h-[100%]']
+            [props.tagList!.class
+              ,
+              ' !rounded-md !p-0 hover:!border-white !text-white !bg-transparent  !h-[100%]'
+            ]
             // typeof props.buttonClass === 'string' && props.buttonClass
           }>
           {text}
@@ -31,7 +28,7 @@ export default defineComponent({
       )
     })
     return () => (
-      <div class={['border-[1px] border-red-500 flex']}> {buttonList}</div>
+      <div class={['border-[1px] border-red-500 flex justify-around items-center']}> {buttonList}</div>
     )
   }
 })
