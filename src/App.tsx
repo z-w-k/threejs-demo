@@ -28,7 +28,7 @@ export default defineComponent({
       return (
         <div
           ref='container'
-          class={'absolute top-[0] left-0 w-[100%] h-[100%] text-black'}>
+          class={'fixed top-[0] left-0 w-[100%] h-[100%] text-black'}>
           {!mainStore.enter ? <HomeButton /> : context()}
         </div>
       )
@@ -43,7 +43,6 @@ export default defineComponent({
   render() {
     return (
       <div class='relative w-[100vw] h-[100vh] text-black'>
-        <div class={' fixed z-10 top-[30%] left-0 text-black'}> </div>
         {this.homeContainer()}
       </div>
     )
