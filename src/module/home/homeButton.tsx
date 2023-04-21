@@ -7,15 +7,15 @@ export default defineComponent({
     const click = () => {
       console.log(mainStore.enter)
       mainStore.enter = true
+      mainStore.utilSet.tweenJS?.flyTo("targetPosition")
+      
     }
     onMounted(() => {})
     return {
-      click,
-      mainStore
+      click
     }
   },
   render() {
-    // console.log(this.isEn
     return (
       <div
         class={[
