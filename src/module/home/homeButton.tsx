@@ -6,7 +6,8 @@ export default defineComponent({
     const mainStore = MainStore()
     const click = () => {
       console.log(mainStore.enter)
-      mainStore.enter = true
+      // mainStore.enter = true
+      mainStore.btIsEnter(true)
       mainStore.utilSet.tweenJS?.flyTo("targetPosition")
       
     }

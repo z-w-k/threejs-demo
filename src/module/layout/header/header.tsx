@@ -1,47 +1,11 @@
 import { Vector3 } from 'three';
-import { flyToPosition } from '../../../util/tween'
 import ButtonList from '../../utils/button'
 import { MainStore } from '../../../store/mainStore';
-
-export interface TagList {
-  textList: { text:string; path: string; flyToPosition?: FlyToPosition }[]
-  class: string
-}
-
-class FlyToPosition implements flyToPosition{
-  controlsTarget:Vector3
-  positionTarget:Vector3
-  needTime:flyToPosition['needTime']={camera:0,controls:0}
-  constructor(controlsTarget:number[],positionTarget:number[], needTime:number[]){
-    this.controlsTarget = new Vector3(...controlsTarget)
-    this.positionTarget = new Vector3(...positionTarget)
-    this.needTime.camera = needTime[0]
-    this.needTime.controls = needTime[1]
-  }
-}
 
 export default defineComponent({
   setup(props, { emit }) {
     const mainStore = MainStore()
-    let tagList: TagList[] = [
-      {
-        textList: [
-          { text: '热力图', path: '/heatMap', flyToPosition: new FlyToPosition([1000,0,0],[1000,2000,1000],[1,1]) },
-          { text: 'ThreeOS Z', path: '' },
-          { text: 'Integrations', path: '' },
-          { text: 'TZ ID', path: '' }
-        ],
-        class:
-          '!w-[23%] !h-[50%] hover:!bg-[#fff] hover:!text-black hover:!h-[60%]'
-      },
-      {
-        textList: [
-          { text: 'Launch ThreeOS Z', path: '' },
-          { text: 'Hub', path: '' }
-        ],
-        class: `!w-[45%] !h-[70%] !bg-[#0df6ff] hover:!bg-pink-400 !text-black hover:!h-[80%]`
-      }
-    ]
+   
     const clickIcon = () => {
       mainStore.utilSet.tweenJS?.flyTo('homePosition')
       mainStore.btIsEnter(false)
@@ -76,7 +40,7 @@ export default defineComponent({
         <div class='w-[40%] h-[100%] flex items-center justify-around border-[1px] border-red-500'>
           <ButtonList
             class={['w-[70%] h-[100%]']}
-            tagList={tagList[0]}
+            tagList={mainStore.tagList[0]}
           />
         </div>
       )
@@ -87,7 +51,7 @@ export default defineComponent({
         <div class='w-[30%] h-[100%] flex items-center justify-center  border-[1px] border-red-500'>
           <ButtonList
             class={[' w-[70%] h-[100%]']}
-            tagList={tagList[1]}
+            tagList={mainStore.tagList[1]}
           />
         </div>
       )

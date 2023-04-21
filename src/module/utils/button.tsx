@@ -1,6 +1,6 @@
 import { Button } from 'ant-design-vue'
-import { MainStore } from '../../store/mainStore'
-import type { TagList } from '../layout/header/header'
+import { MainStore, TagList } from '../../store/mainStore'
+
 export default defineComponent({
   props: {
     tagList:Object as PropType<TagList>,

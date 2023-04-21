@@ -1,9 +1,13 @@
+import { MainStore } from "../../store/mainStore"
+
 export default defineComponent({
     setup(){
-        const a = ref(0)
-        const st = ref('' as string)
-        st.value = '123'
-        return {a}
+        const mainStore =  MainStore()
+        onMounted(()=>{
+            console.log(mainStore.utilSet.threeScene);
+            
+        })
+        return {}
     },
     render(){
         return(

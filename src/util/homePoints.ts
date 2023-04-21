@@ -3,9 +3,9 @@ import ThreeScene from './ThreeScene'
 import * as _ from 'lodash'
 abstract class Attrs {
   abstract particles: THREE.Points
-  protected SEPARATION: number = 50
-  protected AMOUNTX: number = 50
-  protected AMOUNTY: number = 50
+  protected SEPARATION: number = 20
+  protected AMOUNTX: number = 20
+  protected AMOUNTY: number = 20
   protected numParticles: number = this.AMOUNTX * this.AMOUNTY
   protected positions: Float32Array = new Float32Array(this.numParticles * 3)
   protected scales: Float32Array = new Float32Array(this.numParticles)
@@ -19,7 +19,7 @@ abstract class Attrs {
   protected stop: boolean = true
   constructor(
     protected domElement: HTMLElement,
-    protected threeScene: ThreeScene,
+    protected threeScene: ThreeScene
   ) {
     this.windowHalfX = domElement.clientWidth
     this.windowHalfY = domElement.clientHeight
@@ -51,13 +51,13 @@ export default class HomePoints extends Attrs {
     const geometry = new THREE.BufferGeometry()
     geometry.setAttribute(
       'position',
-      new THREE.BufferAttribute(this.positions, 3),
+      new THREE.BufferAttribute(this.positions, 3)
     )
     geometry.setAttribute('scale', new THREE.BufferAttribute(this.scales, 1))
 
     const material = new THREE.ShaderMaterial({
       uniforms: {
-        color: { value: new THREE.Color(0xffffff) },
+        color: { value: new THREE.Color(0xffffff) }
       },
       vertexShader: `
       attribute float scale;
@@ -73,15 +73,17 @@ export default class HomePoints extends Attrs {
               if ( length( gl_PointCoord - vec2( 0.5, 0.5 ) ) > 0.475 ) discard;
               gl_FragColor = vec4( color, 1.0 );
           }
-      `,
+      `
     })
     const points = new THREE.Points(geometry, material)
     this.threeScene.scene.add(points)
     return points
   }
   addEvent = (stop: boolean) => {
-    if (!stop) {
+    
+    if (stop) {
       // this.domElement.addEventListener('pointermove', this.onPointerMove)
+
     } else {
       // this.domElement.removeEventListener('pointermove', this.onPointerMove)
     }
@@ -98,15 +100,15 @@ export default class HomePoints extends Attrs {
     this.pointsUpdate()
   }
   private isPlay = () => {
-    if(!this.stop){
+    if (!this.stop) {
       this.SEPARATION = 100
-    }else{
-      this.mouseX= 2000
+    } else {
+      this.mouseX = 2000
       this.mouseY = 2000
     }
   }
   private cameraUpdate = () => {
-    if(this.stop)return
+    if (this.stop) return
     this.threeScene.camera.position.x +=
       (this.mouseX - this.threeScene.camera.position.x) * 0.05
     this.threeScene.camera.position.y +=

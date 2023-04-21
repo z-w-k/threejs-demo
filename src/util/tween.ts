@@ -22,7 +22,7 @@ const positionSet = {
   },
   targetPosition: {
     controlsTarget: new Vector3(0, 0, 0),
-    positionTarget: new Vector3(500, 3000, 0),
+    positionTarget: new Vector3(800, -800, -800),
     needTime: {
       camera: 1,
       controls: 1
