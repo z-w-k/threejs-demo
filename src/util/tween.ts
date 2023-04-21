@@ -61,6 +61,8 @@ export default class TweenJS {
     })
   }
   flyTo = (propertyKey: keyof typeof positionSet) => {
+    console.log(propertyKey);
+    
     const tweens = this.initTween(
       positionSet[propertyKey].controlsTarget,
       positionSet[propertyKey].positionTarget,

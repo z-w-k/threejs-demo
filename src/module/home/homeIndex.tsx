@@ -3,7 +3,7 @@ setup(props,ctx){
 return{}
 },
 render() {
-return <div></div>
+return <div>123</div>
 
 },
 })

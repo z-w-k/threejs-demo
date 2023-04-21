@@ -1,10 +1,3 @@
-import {
-  Button,
-  Layout,
-  LayoutContent,
-  LayoutFooter,
-  LayoutHeader
-} from 'ant-design-vue'
 import { RouterView } from 'vue-router'
 import { MainStore } from './store/mainStore'
 import LayoutModule from './module/layout/layout'
@@ -18,23 +11,25 @@ export default defineComponent({
       mainStore.animate()
     })
 
-    const home = <HomeButton />
-
-    const main = (
-      <RouterView
-        class={[
-          ' pointer-events-none absolute top-[50%] left-[0] translate-y-[-50%] h-[80%] w-[100%] flex items-center justify-center text-white'
-        ]}
-      />
-    )
-    const context = <LayoutModule>{main}</LayoutModule>
+    const context = () => {
+      return (
+        <div>
+          <LayoutModule />
+          <RouterView
+            class={[
+              ' pointer-events-none absolute top-[50%] left-[0] translate-y-[-50%] h-[80%] w-[100%] flex items-center justify-center text-white'
+            ]}
+          />
+        </div>
+      )
+    }
 
     const homeContainer = (): JSX.Element => {
       return (
         <div
           ref='container'
           class={'absolute top-[0] left-0 w-[100%] h-[100%] text-black'}>
-          {!mainStore.enter ? home : context}
+          {!mainStore.enter ? <HomeButton /> : context()}
         </div>
       )
     }
