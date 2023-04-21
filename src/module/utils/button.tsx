@@ -1,22 +1,23 @@
 import { Button } from 'ant-design-vue'
-
-interface button{
-  text:string,
-  path:string
-}
+import { MainStore } from '../../store/mainStore'
+import type { TagList } from '../layout/header/header'
 export default defineComponent({
   props: {
-    tagList: Object,
+    tagList:Object as PropType<TagList>,
     buttonClass: String || Array
   },
   setup(props, { emit }) {
+    
+    const mainStore = MainStore()
     const router = useRouter()
 
-    const clickBl = (button:button) => {
+    const clickBl = (button:TagList['textList'][0]) => {
+      console.log(button);
       router.push(button.path)
+      button.flyToPosition && mainStore.utilSet.tweenJS?.flyTo(button.flyToPosition)
     }
 
-    const buttonList = props.tagList!.textList.map((button: button) => {
+    const buttonList = props.tagList!.textList.map((button) => {
       //   const strW = '!w-['+buttonWidth.value +'%]'
       return (
         <Button
