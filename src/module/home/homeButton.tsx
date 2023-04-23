@@ -5,11 +5,7 @@ export default defineComponent({
   setup(props, { emit }) {
     const mainStore = MainStore()
     const click = () => {
-      console.log(mainStore.enter)
-      // mainStore.enter = true
       mainStore.btIsEnter(true)
-      mainStore.utilSet.tweenJS?.flyTo("targetPosition")
-      
     }
     onMounted(() => {})
     return {

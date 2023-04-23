@@ -17,7 +17,6 @@ export default defineComponent({
     }
   },
   render() {
-    console.log(this.$slots)
     return this.layout.map((item) => {
       if (item instanceof Function) {
         return item()

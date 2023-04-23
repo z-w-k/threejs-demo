@@ -1,5 +1,5 @@
 import { Button } from 'ant-design-vue'
-import { MainStore, TagList } from '../../store/mainStore'
+import { TagList } from '../layout/header/header'
 
 export default defineComponent({
   props: {
@@ -7,14 +7,9 @@ export default defineComponent({
     buttonClass: String || Array
   },
   setup(props, { emit }) {
-    
-    const mainStore = MainStore()
     const router = useRouter()
-
     const clickBl = (button:TagList['textList'][0]) => {
-      console.log(button);
       router.push(button.path)
-      button.flyToPosition && mainStore.utilSet.tweenJS?.flyTo(button.flyToPosition)
     }
 
     const buttonList = props.tagList!.textList.map((button) => {

@@ -1,34 +1,9 @@
 import TWEEN, { Tween } from '@tweenjs/tween.js'
 import ThreeScene from './ThreeScene'
 import { Vector3 } from 'three'
+import { flyToPosition } from '../store/mainStore'
 
-export interface flyToPosition {
-  controlsTarget: Vector3
-  positionTarget: Vector3
-  needTime: {
-    camera: number
-    controls: number
-  }
-}
 
-const positionSet = {
-  homePosition: {
-    controlsTarget: new Vector3(1, 0, 0),
-    positionTarget: new Vector3(-2000, -2000, -2000),
-    needTime: {
-      camera:2,
-      controls:2
-    }
-  },
-  targetPosition: {
-    controlsTarget: new Vector3(0, 0, 0),
-    positionTarget: new Vector3(800, -800, -800),
-    needTime: {
-      camera: 1,
-      controls: 1
-    }
-  }
-}
 
 export default class TweenJS {
   threeScene: ThreeScene
@@ -40,11 +15,11 @@ export default class TweenJS {
   initTween(flyToPosition: flyToPosition) {
     const { controlsTarget, positionTarget, needTime } = flyToPosition
     const cameraTween = new TWEEN.Tween(this.threeScene.camera.position)
-      .to(positionTarget, needTime.camera *1000)
+      .to(positionTarget, needTime.camera * 1000)
       .easing(TWEEN.Easing.Quadratic.InOut)
 
     const controlsTween = new TWEEN.Tween(this.threeScene.controls.target)
-      .to(controlsTarget, needTime.controls*1000)
+      .to(controlsTarget, needTime.controls * 1000)
       .easing(TWEEN.Easing.Quadratic.InOut)
 
     const update = () => {
@@ -61,16 +36,9 @@ export default class TweenJS {
       tween.start()
     })
   }
-  flyTo = (
-    propertyKey:typeof positionSet.homePosition | keyof typeof positionSet
-  ) => {
-
+  flyTo = (propertyKey: flyToPosition) => {
     let tweens: Tween<Vector3>[]
-    if (typeof propertyKey === 'string') {
-      tweens = this.initTween(positionSet[propertyKey])
-    } else {
-      tweens = this.initTween(propertyKey)
-    }
+    tweens = this.initTween(propertyKey)
     this.play(tweens!)
   }
 }

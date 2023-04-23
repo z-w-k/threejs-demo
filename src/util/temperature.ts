@@ -6,11 +6,35 @@ import ThreeScene from './ThreeScene'
 //   };
 // let points = 0;
 
-interface TemperatureData {
+export interface TemperatureData {
   x: number
   y: number
   value: number
 }
+
+export interface ModelParams {
+  (
+    size: number[],
+    position: [number, number, number],
+    materialConfig?: {
+      color?: string
+      map?: boolean
+      transparent?: boolean
+    },
+    face?: number
+  ): THREE.Mesh<THREE.BoxGeometry,THREE.Material[]>
+}
+
+export interface MapParams {
+  (option: {
+    canvasWeight: number
+    canvasHeight: number
+    temperaturePlate: TemperatureData[][] | TemperatureData[]
+    multiply?: number
+    opacity?: number
+  }): THREE.Texture
+}
+
 class TemperatureField {
   points: number = 0
   canvasHeight: number = 1000
@@ -20,40 +44,62 @@ class TemperatureField {
   temperaturePlate!: TemperatureData[][] | TemperatureData[] | any
   context!: CanvasRenderingContext2D
   constructor(public threeScene: ThreeScene) {}
+
+  //模拟温度数据
+  createRandomData(
+    xNum: number = 10,
+    yNum: number = 2,
+    maxTemp: number = 100,
+    minTemp: number = 10
+  ) {
+    const rawData = []
+    for (let i = 0; i < yNum; i++) {
+      const row = []
+      for (let j = 0; j < xNum; j++) {
+        row.push(Math.floor(Math.random() * (maxTemp - minTemp + 1)) + minTemp)
+      }
+      rawData.push(row)
+    }
+    return rawData
+  }
   //创建模型
-  createModel(
-    size: number[] = [5, 5, 5],
-    position: [number, number, number] = [0, 0, 0],
-    materialConfig = { color: 'pink', map: false, transparent: false }
+  createModel: ModelParams = function (
+    size = [5, 5, 5],
+    position = [0, 0, 0],
+    materialConfig = { color: 'pink' },
+    face = 6
   ) {
     // const colorSet = ['red','orange','yellow','blue','green','purple']
+
     const geometry = new THREE.BoxGeometry(...size)
     const mats = []
-    for (let i = 0; i < geometry.groups.length; i++) {
+    for (let i = 0; i < face; i++) {
       const material = new THREE.MeshBasicMaterial({
-        // color: colorSet[i],
+        color: materialConfig.color as THREE.ColorRepresentation,
         map: materialConfig.map ? new THREE.Texture() : null,
-        transparent: materialConfig.transparent
+        transparent: materialConfig.transparent ? true : false
       })
       mats.push(material)
     }
+
     const box = new THREE.Mesh(geometry, mats)
     box.position.set(...position)
     return box
   }
   //接收温度场模型
-  createMap(
-    temperaturePlate: TemperatureData[][] | TemperatureData[],
-    canvasWeight: number,
-    canvasHeight: number,
-    multiply: number,
-    opacity: number
-  ) {
+  createMap: MapParams = (option) => {
+    const {
+      canvasWeight,
+      canvasHeight,
+      temperaturePlate,
+      multiply,
+      opacity
+    } = option
     this.temperaturePlate = temperaturePlate
     this.canvasWeight = canvasWeight
     this.canvasHeight = canvasHeight
-    this.multiply = multiply
-    this.opacity = opacity
+    this.multiply = multiply ? multiply : 1
+    this.opacity = opacity ? opacity :1
     const heatMapTexture = new THREE.Texture(this.heatMap())
     return heatMapTexture
   }
@@ -62,9 +108,8 @@ class TemperatureField {
     this.drawCircular({
       x: drawData.x,
       y: drawData.y,
-      radius: Math.floor(drawData.value / this.multiply),
-      weight: Math.floor(drawData.value) / 1400,
-      opacity: this.opacity
+      radius: Math.floor(drawData.value)/5,
+      weight: Math.floor(drawData.value)/100,
     })
   }
 
@@ -74,8 +119,8 @@ class TemperatureField {
     canvas.width = this.canvasWeight
     canvas.height = this.canvasHeight
     this.context = canvas.getContext('2d')!
-    // context.fillStyle = "RGBA(255,255,0,.5)";
-    // context.fillRect(0, 0, width, height);
+    this.context.fillStyle = "RGBA(255,231,0,.5)";
+    this.context.fillRect(0, 0, this.canvasWeight, this.canvasHeight);
     for (let i = 0; i < this.points; i++) {
       if (this.temperaturePlate[i] instanceof Array) {
         for (let j = 0; j < this.temperaturePlate[i].length; j++) {
@@ -85,36 +130,35 @@ class TemperatureField {
         this.readyDraw(this.temperaturePlate[i])
       }
     }
-    // let palette = this.createPalette();
-    // // document.body.appendChild(palette.canvas);
-    // let imageData = context.getImageData(0, 0, width, height);
-    // let pictureData = imageData.data;
-    // for (let i = 3; i < pictureData.length; i += 4) {
-    //   //根据画面数据绘制颜色
-    //   let alpha = pictureData[i];
-    //   let color = palette.pickColor(alpha);
-    //   pictureData[i - 3] = color[0];
-    //   pictureData[i - 2] = color[1];
-    //   pictureData[i - 1] = color[2];
-    // }
-
+    let palette = this.createPalette();
+    // document.body.appendChild(palette.canvas);
+    let imageData = this.context.getImageData(0, 0, this.canvasWeight, this.canvasHeight);
+    let pictureData = imageData.data;
+    for (let i = 3; i < pictureData.length; i += 4) {
+      //根据画面数据绘制颜色
+      let alpha = pictureData[i];
+      let color = palette.pickColor(alpha);
+      pictureData[i - 3] = color[0];
+      pictureData[i - 2] = color[1];
+      pictureData[i - 1] = color[2];
+    }
     // for (var i = 0; i < pictureData.length; i += 4) {
     //   // 背景设置成青色
     //   if (pictureData[i + 3] == 0) {
     //     pictureData[i] = 50;
     //     pictureData[i + 1] = 228;
     //     pictureData[i + 2] = 50;
-    //     pictureData[i + 3] = 0.8;
+    //     pictureData[i + 3] = 0.5;
     //   }
     // }
-    // context.putImageData(imageData, 0, 0); //设置画面数据
+    this.context.putImageData(imageData, 0, 0); //设置画面数据
 
     return canvas
   }
 
   //绘制辐射圆
-  drawCircular(opts:{[arg:string]:number}) {
-    let { x, y, radius, weight, opacity } = opts
+  drawCircular(opts: { [arg: string]: number }) {
+    let { x, y, radius, weight } = opts
     // 创建圆设置填充色
     let rGradient = this.context.createRadialGradient(x, y, 0, x, y, radius)
     rGradient.addColorStop(0, `rgba(255 0, 0, ${weight})`)
@@ -122,7 +166,7 @@ class TemperatureField {
     this.context.fillStyle = rGradient
     // 设置globalAlpha
     //倍率必须根据最高温度值
-    this.context.globalAlpha = weight / opacity
+    this.context.globalAlpha = 1
     this.context.beginPath()
     this.context.arc(x, y, radius, 0, 2 * Math.PI)
     this.context.closePath()
@@ -133,8 +177,8 @@ class TemperatureField {
   createPalette() {
     //颜色条的颜色分布
     const colorStops = {
-      '0': '#0f0',
-      '0.5': '#ff0',
+      '0': '#ffe700',
+      // '0.5': '#ffc000',
       '1': '#f00'
     }
     //颜色条的大小
