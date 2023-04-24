@@ -58,7 +58,7 @@ class TemperatureField {
       const row = []
       for (let j = 0; j < xNum; j++) {
         // row.push(Math.floor(Math.random() * (maxTemp - minTemp + time)) + minTemp)
-        row.push(time/2)
+        row.push(time<100?time : 200-time)
       }
       rawData.push(row)
     }
