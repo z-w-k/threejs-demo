@@ -37,10 +37,10 @@ export default defineComponent({
       const tempDataSet = createTempData()
       let i = 0
       player = setInterval(()=>{
-        if(i===10)i=0
+        if(i===60)i=0
         initTemp(tempDataSet[i], box)
         i++
-      },1000/5)
+      },1000/60)
 
 
       mainStore.utilSet.threeScene?.scene.add(box)
@@ -49,7 +49,7 @@ export default defineComponent({
     const createTempData = () => {
       const tempDataSet = []
 
-      for (let i = 0; i < 10; i++) {
+      for (let i = 0; i < 60; i++) {
         tempDataSet.push(
           processData(mainStore.utilSet.temp!.createRandomData())
         )

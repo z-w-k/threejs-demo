@@ -49,8 +49,8 @@ class TemperatureField {
   createRandomData(
     xNum: number = 10,
     yNum: number = 2,
-    maxTemp: number = 100,
-    minTemp: number = 10
+    maxTemp: number = 80,
+    minTemp: number = 60
   ) {
     const rawData = []
     for (let i = 0; i < yNum; i++) {
