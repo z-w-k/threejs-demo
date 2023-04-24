@@ -37,7 +37,9 @@ class FlyToPosition implements flyToPosition {
 }
 
 export interface ScenePosition {
-  [positionName: string]: FlyToPosition
+  enterPosition: FlyToPosition,
+  heatMap :FlyToPosition,
+  // homePosition:FlyToPosition,
 }
 
 export const MainStore = defineStore('mainStore', () => {
@@ -49,9 +51,9 @@ export const MainStore = defineStore('mainStore', () => {
   const enter = ref(false)
   const utilSet: Ref<UtilSet> = ref({})
   const scenePosition: Ref<ScenePosition> = ref({
-    heatMap: new FlyToPosition([800, 800, 800], [600, 1000, 600], [1, 1]),
-    homePosition: new FlyToPosition([1, 0, 0], [-2000, -2000, -2000], [2, 2]),
-    enterPosition: new FlyToPosition([0, 0, 0], [800, -800, -800], [1, 1])
+    heatMap: new FlyToPosition([900, 900, 900], [600, 1000, 600], [1, 1]),
+    // homePosition: new FlyToPosition([1, 0, 0], [-2000, -2000, -2000], [2, 2]),
+    enterPosition: new FlyToPosition([0, 0, 0], [800, 800, 800], [.5, .5])
   })
 
   const init = (homeContainer: HTMLElement) => {
@@ -66,7 +68,7 @@ export const MainStore = defineStore('mainStore', () => {
     utilSet.value.temp = temp
     // const box = new THREE.Mesh(new THREE.BoxGeometry(1000,1000,1000),new THREE.MeshBasicMaterial({color:'white'}))
     // threeScene.scene.add(box)
-    threeScene.camera.position.set(400, -400, -400)
+    threeScene.camera.position.set(600, 400, 600)
     threeScene.controls.target.set(1, 0, 0)
     threeScene.controls.update()
     window.addEventListener('resize', threeScene.onWindowResize)
@@ -81,7 +83,7 @@ export const MainStore = defineStore('mainStore', () => {
   const btIsEnter = (isEnter: boolean) => {
     enter.value = isEnter
     const target = isEnter ? 'enterPosition' : 'homePosition'
-    flyTo(target) 
+    flyTo(target as keyof ScenePosition) 
   }
 
   const animate = () => {

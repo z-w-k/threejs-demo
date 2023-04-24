@@ -10,7 +10,7 @@ export interface TagList {
 export default defineComponent({
   setup(props, { emit }) {
     const mainStore = MainStore()
-
+    const router = useRouter()
     let tagList: TagList[] = [
       {
         textList: [
@@ -31,7 +31,7 @@ export default defineComponent({
       }
     ]
     const clickIcon = () => {
-      mainStore.btIsEnter(false)
+      router.push('home')
     }
     const iconInstance = ref()
 
@@ -41,7 +41,7 @@ export default defineComponent({
           ref='iconInstance'
           onClick={clickIcon}
           class={
-            'border-2 absolute w-[5vh] h-[5vh] hover:h-[6vh] hover:w-[6vh] transition-all ease-in-out duration-500 hover:translate-x-[100%] '
+            'border-2 absolute w-[5vh] h-[5vh] hover:h-[6vh] hover:w-[6vh] transition-all ease-in-out duration-500 hover:translate-x-[20%] '
           }></div>
       )
     }

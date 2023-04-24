@@ -9,7 +9,6 @@ let childRoutes: RouteRecordRaw[] = []
 Object.keys(moduleRoutes)
   .forEach(k => (childRoutes = childRoutes.concat(moduleRoutes[k as string] as RouteRecordRaw)))
 
-console.log(childRoutes)
 
 const routes:RouteRecordRaw[] = [
   {

@@ -108,8 +108,8 @@ class TemperatureField {
     this.drawCircular({
       x: drawData.x,
       y: drawData.y,
-      radius: Math.floor(drawData.value)/5,
-      weight: Math.floor(drawData.value)/100,
+      radius: Math.floor(drawData.value)/3,
+      weight: Math.floor(drawData.value)/150,
     })
   }
 
@@ -119,7 +119,7 @@ class TemperatureField {
     canvas.width = this.canvasWeight
     canvas.height = this.canvasHeight
     this.context = canvas.getContext('2d')!
-    this.context.fillStyle = "RGBA(255,231,0,.5)";
+    this.context.fillStyle = "RGBA(255,231,0,.2)";
     this.context.fillRect(0, 0, this.canvasWeight, this.canvasHeight);
     for (let i = 0; i < this.points; i++) {
       if (this.temperaturePlate[i] instanceof Array) {
@@ -178,7 +178,7 @@ class TemperatureField {
     //颜色条的颜色分布
     const colorStops = {
       '0': '#ffe700',
-      // '0.5': '#ffc000',
+      '0.5': '#ffc000',
       '1': '#f00'
     }
     //颜色条的大小

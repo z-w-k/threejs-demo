@@ -1,5 +1,5 @@
 import { Material, Mesh, Texture, Vector2 } from 'three'
-import { MainStore } from '../../store/mainStore'
+import { MainStore, ScenePosition } from '../../store/mainStore'
 import { MapParams, ModelParams, TemperatureData } from '../../util/temperature'
 type ModelPositionParams = Parameters<ModelParams>
 type MapParamsData = Parameters<MapParams>[0][]
@@ -9,6 +9,7 @@ export default defineComponent({
     const mainStore = MainStore()
     const route = useRoute()
     let box: THREE.Mesh
+    let player:number
     const boxPlateDataReferer = [
       {
         canvasWeight: 100,
@@ -20,24 +21,42 @@ export default defineComponent({
       },
       {
         canvasWeight: 100,
-        canvasHeight: 80
+        canvasHeight: 80,
       }
     ]
     const init = () => {
       const targetPosition: ModelPositionParams[1] = Object.values(
-        mainStore.flyTo(route.name as string).controlsTarget
+        mainStore.flyTo(route.name as keyof ScenePosition).controlsTarget
       ) as [number, number, number]
       box = mainStore.utilSet.temp!.createModel(
         [100, 20, 200],
         targetPosition,
-        { color: 'white', transparent: true }
+        { color: 'white',map:true, transparent: true }
       )!
 
-      const randomData = mainStore.utilSet.temp!.createRandomData()
-      const tempData = processData(randomData)
-      initTemp(tempData, box)
+      const tempDataSet = createTempData()
+      let i = 0
+      player = setInterval(()=>{
+        if(i===10)i=0
+        initTemp(tempDataSet[i], box)
+        i++
+      },1000/5)
+
 
       mainStore.utilSet.threeScene?.scene.add(box)
+    }
+
+    const createTempData = () => {
+      const tempDataSet = []
+
+      for (let i = 0; i < 10; i++) {
+        tempDataSet.push(
+          processData(mainStore.utilSet.temp!.createRandomData())
+        )
+      }
+
+
+      return tempDataSet
     }
 
     const initTemp = (tempData: MapParamsData, rectBox: typeof box) => {
@@ -60,10 +79,8 @@ export default defineComponent({
       init()
     })
 
-    onBeforeUnmount(() => {})
     const processData = (tempDataRaw: number[][]): MapParamsData => {
       let boxPlateData = new Array()
-
       boxPlateDataReferer.forEach((referer, plateInd) => {
         boxPlateData[plateInd] = {}
         const plate = boxPlateData[plateInd]
@@ -86,6 +103,11 @@ export default defineComponent({
       })
       return boxPlateData!
     }
+    onBeforeUnmount(() => {
+      clearInterval(player)
+      box.geometry.dispose()
+      mainStore.utilSet.threeScene?.scene.remove(box)
+    })
 
     return {}
   },
