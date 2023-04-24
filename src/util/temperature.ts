@@ -47,16 +47,18 @@ class TemperatureField {
 
   //模拟温度数据
   createRandomData(
+    time:number,
     xNum: number = 10,
     yNum: number = 2,
-    maxTemp: number = 80,
-    minTemp: number = 60
+    maxTemp: number = 2,
+    minTemp: number = 0
   ) {
     const rawData = []
     for (let i = 0; i < yNum; i++) {
       const row = []
       for (let j = 0; j < xNum; j++) {
-        row.push(Math.floor(Math.random() * (maxTemp - minTemp + 1)) + minTemp)
+        // row.push(Math.floor(Math.random() * (maxTemp - minTemp + time)) + minTemp)
+        row.push(time/2)
       }
       rawData.push(row)
     }

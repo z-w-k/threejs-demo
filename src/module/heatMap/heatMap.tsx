@@ -37,7 +37,7 @@ export default defineComponent({
       const tempDataSet = createTempData()
       let i = 0
       player = setInterval(()=>{
-        if(i===60)i=0
+        if(i===200)i=0
         initTemp(tempDataSet[i], box)
         i++
       },1000/60)
@@ -49,9 +49,9 @@ export default defineComponent({
     const createTempData = () => {
       const tempDataSet = []
 
-      for (let i = 0; i < 60; i++) {
+      for (let i = 0; i < 200; i++) {
         tempDataSet.push(
-          processData(mainStore.utilSet.temp!.createRandomData())
+          processData(mainStore.utilSet.temp!.createRandomData(i))
         )
       }
 
