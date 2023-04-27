@@ -8,8 +8,8 @@ export default defineComponent({
   setup() {
     const mainStore = MainStore()
     const route = useRoute()
-    let box: THREE.Mesh
-    let player:number
+    let box: ReturnType<ModelParams>
+    let player: number
     const boxPlateDataReferer = [
       {
         canvasWeight: 100,
@@ -21,7 +21,7 @@ export default defineComponent({
       },
       {
         canvasWeight: 100,
-        canvasHeight: 80,
+        canvasHeight: 80
       }
     ]
     const init = () => {
@@ -31,17 +31,16 @@ export default defineComponent({
       box = mainStore.utilSet.temp!.createModel(
         [100, 20, 200],
         targetPosition,
-        { color: 'white',map:true, transparent: true }
+        { color: 'white', map: true, transparent: true }
       )!
 
       const tempDataSet = createTempData()
       let i = 0
-      player = setInterval(()=>{
-        if(i===200)i=0
+      player = setInterval(() => {
+        if (i === 200) i = 0
         initTemp(tempDataSet[i], box)
         i++
-      },1000/60)
-
+      }, 1000 / 60)
 
       mainStore.utilSet.threeScene?.scene.add(box)
     }
@@ -54,7 +53,6 @@ export default defineComponent({
           processData(mainStore.utilSet.temp!.createRandomData(i))
         )
       }
-
 
       return tempDataSet
     }
@@ -103,10 +101,20 @@ export default defineComponent({
       })
       return boxPlateData!
     }
-    onBeforeUnmount(() => {
+
+    const clearScene = () => {
+      console.log('热力图已清除')
       clearInterval(player)
       box.geometry.dispose()
+      box.material.forEach((m) => {
+        m.dispose()
+      })
+      box.clear()
       mainStore.utilSet.threeScene?.scene.remove(box)
+    }
+
+    onBeforeUnmount(() => {
+      setTimeout(clearScene, 500)
     })
 
     return {}

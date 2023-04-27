@@ -3,12 +3,12 @@ import { TagList } from '../layout/header/header'
 
 export default defineComponent({
   props: {
-    tagList:Object as PropType<TagList>,
+    tagList: Object as PropType<TagList>,
     buttonClass: String || Array
   },
   setup(props, { emit }) {
     const router = useRouter()
-    const clickBl = (button:TagList['textList'][0]) => {
+    const clickBl = (button: TagList['textList'][0]) => {
       router.push(button.path)
     }
 
@@ -16,10 +16,10 @@ export default defineComponent({
       //   const strW = '!w-['+buttonWidth.value +'%]'
       return (
         <Button
-          onClick={()=>clickBl(button)}
+          onClick={() => clickBl(button)}
           class={
-            [props.tagList!.class
-              ,
+            [
+              props.tagList!.class,
               ' !rounded-md !p-0 hover:!border-white !text-white !bg-transparent  !h-[100%]'
             ]
             // typeof props.buttonClass === 'string' && props.buttonClass
@@ -29,7 +29,13 @@ export default defineComponent({
       )
     })
     return () => (
-      <div class={['border-[1px] border-red-500 flex justify-around items-center']}> {buttonList}</div>
+      <div
+        class={[
+          'border-[1px] border-red-500 flex justify-around items-center'
+        ]}>
+        {' '}
+        {buttonList}
+      </div>
     )
   }
 })

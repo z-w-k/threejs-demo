@@ -51,9 +51,10 @@ export const MainStore = defineStore('mainStore', () => {
   const enter = ref(false)
   const utilSet: Ref<UtilSet> = ref({})
   const scenePosition: Ref<ScenePosition> = ref({
-    heatMap: new FlyToPosition([900, 900, 900], [600, 1000, 600], [1, 1]),
+    heatMap: new FlyToPosition([900, 900, -900], [600, 1000, -800], [1, 1]),
     // homePosition: new FlyToPosition([1, 0, 0], [-2000, -2000, -2000], [2, 2]),
-    enterPosition: new FlyToPosition([0, 0, 0], [800, 800, 800], [.5, .5])
+    enterPosition: new FlyToPosition([0, 0, 0], [400, 400, 400], [.5, .5]),
+    points:new FlyToPosition([-900,900,900],[-600,1000,600],[1,1])
   })
 
   const init = (homeContainer: HTMLElement) => {

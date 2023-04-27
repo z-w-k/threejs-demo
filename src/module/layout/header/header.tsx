@@ -15,7 +15,7 @@ export default defineComponent({
       {
         textList: [
           { text: '热力图', path: '/heatMap' },
-          { text: 'ThreeOS Z', path: '' },
+          { text: '粒子系统', path: '/points' },
           { text: 'Integrations', path: '' },
           { text: 'TZ ID', path: '' }
         ],

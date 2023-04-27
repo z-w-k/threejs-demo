@@ -86,7 +86,7 @@ class TemperatureField {
 
     const box = new THREE.Mesh(geometry, mats)
     box.position.set(...position)
-    return box
+    return box as ReturnType<ModelParams>
   }
   //接收温度场模型
   createMap: MapParams = (option) => {

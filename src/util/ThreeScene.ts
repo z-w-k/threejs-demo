@@ -16,6 +16,7 @@ class ThreeScene {
   loadingManager:THREE.LoadingManager
   windowHalfX:number=0
   windowHalfY:number=0
+  three
   constructor(
     domElement: HTMLElement,
     cameraConfig:cameraConfig = { fov: 60, near: 0.1, far: 10000},
@@ -27,6 +28,7 @@ class ThreeScene {
     this.controls = this.initControls()
     this.light = this.initLight()
     this.loadingManager = new THREE.LoadingManager()
+    this.three = THREE
   }
   initScene() {
     const scene = new THREE.Scene()
