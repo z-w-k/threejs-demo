@@ -9,26 +9,6 @@ export {}
 
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
-    AButton: typeof import('ant-design-vue/es')['Button']
-    ALayout: typeof import('ant-design-vue/es')['Layout']
-    ALayoutContent: typeof import('ant-design-vue/es')['LayoutContent']
-    ALayoutFooter: typeof import('ant-design-vue/es')['LayoutFooter']
-    ALayoutHeader: typeof import('ant-design-vue/es')['LayoutHeader']
-    Button: typeof import('./components/utils/button.tsx')['default']
-    Demo1: typeof import('./components/heatMap/heatMap.jsx')['default']
-    Demo2: typeof import('./components/Demo2.tsx')['default']
-    Demo3: typeof import('./components/Demo3.tsx')['default']
-    Footer: typeof import('./components/footer/footer.tsx')['default']
-    Header: typeof import('./components/header/header.tsx')['default']
-    HeatMap: typeof import('./components/heatMap/heatMap.tsx')['default']
-    HelloWorld: typeof import('./components/home/home.jsx')['default']
-    Home: typeof import('./components/home/home.tsx')['default']
-    HomeIndex: typeof import('./components/home/homeIndex.tsx')['default']
-    IIconBigCircle: typeof import('~icons/ic/on-big-circle')['default']
-    IMaterialSymbols2k: typeof import('~icons/material-symbols/2k')['default']
-    IUilCircle: typeof import('~icons/uil/circle')['default']
-    'router-link': typeof import('vue-router')['router-link']
-    'router-view': typeof import('vue-router')['router-view']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
   }
