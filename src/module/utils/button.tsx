@@ -9,6 +9,7 @@ export default defineComponent({
   setup(props, { emit }) {
     const router = useRouter()
     const clickBl = (button: TagList['textList'][0]) => {
+      if (button.text === '仓库地址') return window.open(button.path, '_blank')
       router.push(button.path)
     }
 
@@ -29,13 +30,7 @@ export default defineComponent({
       )
     })
     return () => (
-      <div
-        class={[
-          'border-[1px] border-red-500 flex justify-around items-center'
-        ]}>
-        {' '}
-        {buttonList}
-      </div>
+      <div class={[' flex justify-around items-center']}> {buttonList}</div>
     )
   }
 })

@@ -19,10 +19,10 @@ class FlameEmitter extends Emitter {
       velocityShape: Shape.CUBE,
       velocity: new THREE.Vector3(...params.rotate),
       velocityRange: new THREE.Vector3(0, 0, 0),
-      texture: new THREE.TextureLoader().load('/img/fire/smoke.png'),
-      sizeTween: new Tween( [0, 1.5, .5], [0, 2, 0] ),
+      texture: new THREE.TextureLoader().load('/img/smoke.png'),
+      sizeTween: new Tween( [0, 3, .5], [0, 15, 0] ),
       opacityTween: new Tween( [0.9, 1.5], [1, 0] ),
-      colorTween : new Tween( [0.5, 1], [new THREE.Vector3(0.02, 1, 0.5), new THREE.Vector3(0.05, 1, 0)] ),
+      colorTween : new Tween( [0.3, .6,1], [new THREE.Vector3(0.05, .5, 0.01), new THREE.Vector3(0.02, 1, 0.5),new THREE.Vector3(0, .5, 0.01)] ),
       blendMode : THREE.AdditiveBlending,
       particlesPerSecond: 60
     })

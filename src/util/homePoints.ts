@@ -3,9 +3,9 @@ import ThreeScene from './ThreeScene'
 import * as _ from 'lodash'
 abstract class Attrs {
   abstract particles: THREE.Points
-  protected SEPARATION: number = 20
-  protected AMOUNTX: number = 20
-  protected AMOUNTY: number = 20
+  protected SEPARATION: number = 5
+  protected AMOUNTX: number = 5
+  protected AMOUNTY: number = 5
   protected numParticles: number = this.AMOUNTX * this.AMOUNTY
   protected positions: Float32Array = new Float32Array(this.numParticles * 3)
   protected scales: Float32Array = new Float32Array(this.numParticles)
@@ -76,6 +76,8 @@ export default class HomePoints extends Attrs {
       `
     })
     const points = new THREE.Points(geometry, material)
+    console.log(points);
+    points.layers.enable(1)
     this.threeScene.scene.add(points)
     return points
   }

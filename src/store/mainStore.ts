@@ -37,8 +37,8 @@ class FlyToPosition implements flyToPosition {
 }
 
 export interface ScenePosition {
-  enterPosition: FlyToPosition,
-  heatMap :FlyToPosition,
+  enterPosition: FlyToPosition
+  heatMap: FlyToPosition
   // homePosition:FlyToPosition,
 }
 
@@ -51,10 +51,10 @@ export const MainStore = defineStore('mainStore', () => {
   const enter = ref(false)
   const utilSet: Ref<UtilSet> = ref({})
   const scenePosition: Ref<ScenePosition> = ref({
-    heatMap: new FlyToPosition([900, 900, -900], [600, 1000, -800], [1, 1]),
+    heatMap: new FlyToPosition([0, -2200, 0], [0, -2000, 20], [1, 1]),
     // homePosition: new FlyToPosition([1, 0, 0], [-2000, -2000, -2000], [2, 2]),
-    enterPosition: new FlyToPosition([0, 0, 0], [400, 400, 400], [.5, .5]),
-    points:new FlyToPosition([-900,900,900],[-600,1000,600],[1,1])
+    enterPosition: new FlyToPosition([0, 0, 0], [0, -130, 0], [1, 1]),
+    points: new FlyToPosition([0, -1000, 0], [0, -1000, 20], [1, 1])
   })
 
   const init = (homeContainer: HTMLElement) => {
@@ -69,8 +69,8 @@ export const MainStore = defineStore('mainStore', () => {
     utilSet.value.temp = temp
     // const box = new THREE.Mesh(new THREE.BoxGeometry(1000,1000,1000),new THREE.MeshBasicMaterial({color:'white'}))
     // threeScene.scene.add(box)
-    threeScene.camera.position.set(600, 400, 600)
-    threeScene.controls.target.set(1, 0, 0)
+    threeScene.camera.position.set(0, -150, 0)
+    threeScene.controls.target.set(0, 0, 0)
     threeScene.controls.update()
     window.addEventListener('resize', threeScene.onWindowResize)
   }
@@ -84,16 +84,14 @@ export const MainStore = defineStore('mainStore', () => {
   const btIsEnter = (isEnter: boolean) => {
     enter.value = isEnter
     const target = isEnter ? 'enterPosition' : 'homePosition'
-    flyTo(target as keyof ScenePosition) 
+    flyTo(target as keyof ScenePosition)
   }
-
+  let animateId
   const animate = () => {
-    requestAnimationFrame(animate)
-    threeScene.renderer.render(threeScene.scene, threeScene.camera)
-    homePoints.update()
     tweenJS.tween.update()
-    threeScene.controls.update()
-    
+    homePoints.update()
+    threeScene.animate()
+    animateId = requestAnimationFrame(animate)
   }
 
   return { utilSet, enter, init, animate, btIsEnter, flyTo }

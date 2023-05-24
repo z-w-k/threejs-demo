@@ -5,11 +5,11 @@ export default defineComponent({
   setup(props, { emit }) {
     const header = () => {
       return (
-        <Header class='w-[100%] h-[10%]  border-2 absolute top-0 left-[50%] translate-x-[-50%]' />
+        <Header class='w-[100%] h-[10%]   absolute top-0 left-[50%] translate-x-[-50%]' />
       )
     }
     const footer = (
-      <Footer class='pointer-events-none none w-[100%] h-[10%]  border-2 absolute bottom-0 left-0' />
+      <Footer class='pointer-events-none none w-[100%] h-[10%]  absolute bottom-0 left-0' />
     )
     const layout = [header, footer]
     return {

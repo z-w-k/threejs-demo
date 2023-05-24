@@ -13,12 +13,15 @@ export default class TweenJS {
     this.tween = TWEEN
   }
   initTween(flyToPosition: flyToPosition) {
+    const cam = this.threeScene.camera.position
+    const con = this.threeScene.controls.target
+
     const { controlsTarget, positionTarget, needTime } = flyToPosition
-    const cameraTween = new TWEEN.Tween(this.threeScene.camera.position)
+    const cameraTween = new TWEEN.Tween(cam)
       .to(positionTarget, needTime.camera * 1000)
       .easing(TWEEN.Easing.Quadratic.InOut)
 
-    const controlsTween = new TWEEN.Tween(this.threeScene.controls.target)
+    const controlsTween = new TWEEN.Tween(con)
       .to(controlsTarget, needTime.controls * 1000)
       .easing(TWEEN.Easing.Quadratic.InOut)
 

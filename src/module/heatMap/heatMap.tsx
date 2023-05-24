@@ -31,9 +31,9 @@ export default defineComponent({
       box = mainStore.utilSet.temp!.createModel(
         [100, 20, 200],
         targetPosition,
-        { color: 'white', map: true, transparent: true }
+        {  map: true, transparent: true }
       )!
-
+      console.log(box);
       const tempDataSet = createTempData()
       let i = 0
       player = setInterval(() => {
@@ -41,7 +41,7 @@ export default defineComponent({
         initTemp(tempDataSet[i], box)
         i++
       }, 1000 / 60)
-
+      box.layers.enable(1)
       mainStore.utilSet.threeScene?.scene.add(box)
     }
 

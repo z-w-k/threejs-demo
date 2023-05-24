@@ -16,16 +16,16 @@ export default defineComponent({
         textList: [
           { text: '热力图', path: '/heatMap' },
           { text: '粒子系统', path: '/points' },
-          { text: 'Integrations', path: '' },
-          { text: 'TZ ID', path: '' }
+          { text: '实现中...', path: '' },
+          { text: '实现中...', path: '' }
         ],
         class:
           '!w-[23%] !h-[50%] hover:!bg-[#fff] hover:!text-black hover:!h-[60%]'
       },
       {
         textList: [
-          { text: 'Launch ThreeOS Z', path: '' },
-          { text: 'Hub', path: '' }
+          { text: '...', path: '' },
+          { text: '仓库地址', path: 'https://github.com/1099571219/threejs-demo' }
         ],
         class: `!w-[45%] !h-[70%] !bg-[#0df6ff] hover:!bg-pink-400 !text-black hover:!h-[80%]`
       }
@@ -41,14 +41,14 @@ export default defineComponent({
           ref='iconInstance'
           onClick={clickIcon}
           class={
-            'border-2 absolute w-[5vh] h-[5vh] hover:h-[6vh] hover:w-[6vh] transition-all ease-in-out duration-500 hover:translate-x-[20%] '
-          }></div>
+            'absolute w-[5vh] h-[5vh] hover:h-[6vh] hover:w-[6vh] transition-all ease-in-out duration-500 hover:translate-x-[20%] '
+          }/>
       )
     }
     const iconContainer = () => {
       return (
-        <div class='flex-1 h-[100%] border-[1px] border-blue-500 flex items-center pl-[2%] text-white'>
-          <div class={'relative w-[20%] h-[60%] border-2 flex items-center'}>
+        <div class='flex-1 h-[100%] flex items-center pl-[2%] text-white'>
+          <div class={'relative w-[20%] h-[60%]  flex items-center'}>
             {icon()}
           </div>
         </div>
@@ -57,7 +57,7 @@ export default defineComponent({
 
     const navButtonList = () => {
       return (
-        <div class='w-[40%] h-[100%] flex items-center justify-around border-[1px] border-red-500'>
+        <div class='w-[40%] h-[100%] flex items-center justify-around '>
           <ButtonList class={['w-[70%] h-[100%]']} tagList={tagList[0]} />
         </div>
       )
@@ -65,7 +65,7 @@ export default defineComponent({
 
     const rightButton = () => {
       return (
-        <div class='w-[30%] h-[100%] flex items-center justify-center  border-[1px] border-red-500'>
+        <div class='w-[30%] h-[100%] flex items-center justify-center  '>
           <ButtonList class={[' w-[70%] h-[100%]']} tagList={tagList[1]} />
         </div>
       )

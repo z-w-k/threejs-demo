@@ -1,6 +1,7 @@
 import * as THREE from 'three'
 import { MainStore, ScenePosition } from '../../store/mainStore'
 import ParticleSystem from '../../util/shader/system'
+import FlameEmitter from '../../util/shader/flame'
 
 export default defineComponent({
   props: {},
@@ -8,6 +9,7 @@ export default defineComponent({
     const mainStore = MainStore()
     const route = useRoute()
     let psMeshGroup: THREE.Group
+
     // const psPosition = [
     //   [
     //     [
@@ -58,35 +60,54 @@ export default defineComponent({
     //     ]
     //   ]
     // ]
+    const group = new THREE.Group()
 
-    const init = () => {
-      psMeshGroup = new THREE.Group()
-      const group = psMeshGroup
+    const initFlame = (targetPosition: THREE.Vector3) => {
+      const position = [targetPosition.x, targetPosition.y, targetPosition.z]
       group.name = '粒子'
-      // psPosition.forEach((stove, stoveInd) => {
-      //   stove.forEach((side, sideIndex) => {
-      //     side.forEach((psInfo) => {
-      //       const emitter = new ParticleSystem({
-      //         // emitter: new FlameEmitter({
-      //         //   position: psInfo.position,
-      //         //   rotate: psInfo.rotate,
-      //         // }),
-      //       });
-      //       emitter.name = psInfo.name;
-      //       // group.add(emitter.mesh);
-      //       psInfo.ps = emitter;
-      //     });
-      //   });
-      // });
+      const emitter = new ParticleSystem(
+        new FlameEmitter({
+          position: position,
+          rotate: [7, 0, 0]
+        })
+      )
+      group.add(emitter.mesh)
       mainStore.utilSet.threeScene!.scene.add(group)
+      return emitter
+    }
+
+    const play =(emitter:ParticleSystem)=>{
+      emitter.start()
+    console.log(mainStore.utilSet.threeScene?.scene);
+
+    }
+
+
+    let emitter:ParticleSystem
+    const init = () => {
+      const targetPosition = mainStore.flyTo(
+        route.name as keyof ScenePosition
+      ).controlsTarget
+      
+      emitter=initFlame(targetPosition)
+      play(emitter)
+
     }
     onMounted(() => {
       init()
-      mainStore.flyTo(route.name as keyof ScenePosition)
     })
+
+    onBeforeUnmount(()=>{
+      setTimeout(() => {
+        emitter.stop()
+        emitter.destroy()
+        mainStore.utilSet.threeScene?.clearScene(group)
+      }, 1000);
+    })
+
     return {}
   },
   render() {
-    return <div>points</div>
+    return <div></div>
   }
 })

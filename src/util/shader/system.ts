@@ -5,8 +5,9 @@ class ParticleSystem {
   _startTime!:number
   mesh!: THREE.Points
   id!:number
-  constructor(params:FlameEmitter) {
-    Object.assign(this, params)
+  constructor(flameEmitter:FlameEmitter) {
+    Object.assign(this, flameEmitter)
+    this._emitter = flameEmitter
   }
 
   get emitter() {
@@ -21,6 +22,7 @@ class ParticleSystem {
   update() {
     const now = +new Date
     const dt = (now - this._startTime) / 1000
+    
     this._emitter.update(dt*0.5)
     this._startTime = now
     this.id = requestAnimationFrame(this.update.bind(this))
