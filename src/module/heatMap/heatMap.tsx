@@ -41,7 +41,8 @@ export default defineComponent({
         initTemp(tempDataSet[i], box)
         i++
       }, 1000 / 60)
-      box.layers.enable(1)
+      box.layers.enable(0)
+      box.layers.toggle(1)
       mainStore.utilSet.threeScene?.scene.add(box)
     }
 

@@ -61,6 +61,7 @@ class ThreeScene {
     this.renderer = this.initRenderer()
     this.bloomComposer = new EffectComposer(this.renderer) // EffectComposer可以理解为着色器通道容器，着色器通道按照先后顺序添加进来并执行
     this.finalComposer = new EffectComposer(this.renderer)
+    this.bloom()
     this.controls = this.initControls()
     this.light = this.initLight()
     this.loadingManager = new THREE.LoadingManager()
@@ -219,11 +220,11 @@ class ThreeScene {
   }
   animate = () => {
     this.controls.update()
-    // this.scene.traverse(this.darkenNonBloomed) // 隐藏不需要辉光的物体
-    // this.bloomComposer.render()
-    // this.scene.traverse(this.restoreMaterial) // 还原
-    // this.finalComposer.render()
-    this.renderer.render(this.scene, this.camera)
+    this.scene.traverse(this.darkenNonBloomed) // 隐藏不需要辉光的物体
+    this.bloomComposer.render()
+    this.scene.traverse(this.restoreMaterial) // 还原
+    this.finalComposer.render()
+    // this.renderer.render(this.scene, this.camera)
     
   }
   clearScene = (scene:THREE.Object3D) => {

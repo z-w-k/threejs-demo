@@ -1,8 +1,19 @@
 import ThreeScene from '../util/ThreeScene'
 import HomePoints from '../util/homePoints'
 import TweenJS from '../util/tween'
-import { Scene, Vector3 } from 'three'
+import {
+  Layers,
+  MeshBasicMaterial,
+  Scene,
+  ShaderMaterial,
+  Vector2,
+  Vector3
+} from 'three'
 import TemperatureField from '../util/temperature'
+import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass'
+import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass'
+import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer'
+import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass'
 
 interface UtilSet {
   threeScene?: ThreeScene
@@ -73,6 +84,72 @@ export const MainStore = defineStore('mainStore', () => {
     threeScene.controls.target.set(0, 0, 0)
     threeScene.controls.update()
     window.addEventListener('resize', threeScene.onWindowResize)
+
+
+    bloomLayer.set(BLOOM_SCENE)
+
+    const params = {
+      threshold: 0,
+      strength: 3,
+      radius: 0.5,
+      exposure: 1
+    }
+
+    const renderScene = new RenderPass(threeScene.scene, threeScene.camera)
+
+    const bloomPass = new UnrealBloomPass(
+      new Vector2(window.innerWidth, window.innerHeight),
+      1.5,
+      0.4,
+      0.85
+    )
+    bloomPass.threshold = params.threshold
+    bloomPass.strength = params.strength
+    bloomPass.radius = params.radius
+
+    bloomComposer = new EffectComposer(threeScene.renderer)
+    bloomComposer.renderToScreen = false
+    bloomComposer.addPass(renderScene)
+    bloomComposer.addPass(bloomPass)
+
+    const mixPass = new ShaderPass(
+      new ShaderMaterial({
+        uniforms: {
+          baseTexture: { value: null },
+          bloomTexture: { value: bloomComposer.renderTarget2.texture }
+        },
+        vertexShader: `
+          varying vec2 vUv;
+
+			void main() {
+
+				vUv = uv;
+
+				gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
+
+			}
+      `,
+        fragmentShader: `
+        uniform sampler2D baseTexture;
+			uniform sampler2D bloomTexture;
+
+			varying vec2 vUv;
+
+			void main() {
+
+				gl_FragColor = ( texture2D( baseTexture, vUv ) + vec4( 1.0 ) * texture2D( bloomTexture, vUv ) );
+
+			}
+      `,
+        defines: {}
+      }),
+      'baseTexture'
+    )
+    mixPass.needsSwap = true
+
+    finalComposer = new EffectComposer(threeScene.renderer)
+    finalComposer.addPass(renderScene)
+    finalComposer.addPass(mixPass)
   }
 
   const flyTo = (positionName: keyof ScenePosition) => {
@@ -86,11 +163,43 @@ export const MainStore = defineStore('mainStore', () => {
     const target = isEnter ? 'enterPosition' : 'homePosition'
     flyTo(target as keyof ScenePosition)
   }
+
+  const bloomLayer = new Layers()
+  const BLOOM_SCENE = 1
+  const materials = {} as any
+  const darkMaterial = new MeshBasicMaterial({ color: 'black' })
+  let bloomComposer: any
+  let finalComposer: any
+
+  function disposeMaterial(obj: any) {
+    if (obj.material) {
+      obj.material.dispose()
+    }
+  }
+
+  function darkenNonBloomed(obj: any) {
+    if (obj.isMesh && bloomLayer.test(obj.layers) === false) {
+      materials[obj.uuid] = obj.material
+      obj.material = darkMaterial
+    }
+  }
+
+  function restoreMaterial(obj: any) {
+    if (materials[obj.uuid]) {
+      obj.material = materials[obj.uuid]
+      delete materials[obj.uuid]
+    }
+  }
+
   let animateId
   const animate = () => {
     tweenJS.tween.update()
     homePoints.update()
     threeScene.animate()
+    // threeScene.scene.traverse(darkenNonBloomed) // 隐藏不需要辉光的物体
+    // bloomComposer.render()
+    // threeScene.scene.traverse(restoreMaterial) // 还原
+    // finalComposer.render()
     animateId = requestAnimationFrame(animate)
   }
 

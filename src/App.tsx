@@ -43,6 +43,7 @@ export default defineComponent({
   render() {
     return (
       <div class='relative w-[100vw] h-[100vh] text-black'>
+        123456
         {this.homeContainer()}
       </div>
     )
