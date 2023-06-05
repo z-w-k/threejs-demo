@@ -1,6 +1,5 @@
 import ThreeScene from '../ThreeScene'
 import { ThreeBaseApi } from './baseAPI'
-import { InitSky } from './sky/sky'
 
 export function propsTransfer<T extends ThreeBaseApi>(
   targetThis: T,

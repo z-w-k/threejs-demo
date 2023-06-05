@@ -80,9 +80,9 @@ export const MainStore = defineStore('mainStore', () => {
     utilSet.value.temp = temp
     // const box = new THREE.Mesh(new THREE.BoxGeometry(1000,1000,1000),new THREE.MeshBasicMaterial({color:'white'}))
     // threeScene.scene.add(box)
-    threeScene.camera.position.set(5, 0, 0)
-    threeScene.controls.target.set(0, 0, 0)
-    threeScene.controls.update()
+    // threeScene.camera.position.set(50, 0, 50)
+    // threeScene.controls.target.set(0, 0, 0)
+    // threeScene.controls.update()
     window.addEventListener('resize', threeScene.onWindowResize)
   }
 

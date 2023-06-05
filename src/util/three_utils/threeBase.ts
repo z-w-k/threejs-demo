@@ -23,7 +23,7 @@ export class ThreeBase extends ThreeBaseApi {
     this.scene = this.initScene()
     this.camera = this.initCamera()
     this.renderer = this.initRenderer()
-    this.controls = this.initControls()
+    // this.controls = this.initControls()
     this.light = this.initLight()
     this.camera.rotation.order = 'YXZ'
     this.scene.background = new THREE.Color(0x88ccee)
@@ -62,6 +62,8 @@ export class ThreeBase extends ThreeBaseApi {
       logarithmicDepthBuffer: true
     })
     renderer.setSize(domElement.clientWidth, domElement.clientHeight)
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 0.5;
     domElement.appendChild(renderer.domElement)
     return renderer
   }
@@ -79,7 +81,7 @@ export class ThreeBase extends ThreeBaseApi {
   }
   initLight = () => {
     // 环境光
-    const AmbientLight = new THREE.AmbientLight('#fff')
+    const AmbientLight = new THREE.AmbientLight('#fff',.2)
     return AmbientLight
   }
   clearScene = (scene: THREE.Object3D) => {
@@ -108,13 +110,21 @@ export class ThreeBase extends ThreeBaseApi {
         this.scene.add(gltf.scene)
         this.scene.traverse((obj) => {
           if (obj.type === 'Mesh') {
+            obj.receiveShadow =true
+            obj.castShadow=true
             if (obj.name === 'ground') {
+              console.log(obj);
+              
+              // obj.castShadow=false
               this.worldOctree.fromGraphNode(obj)
             }
           }
         })
         this.loadingManager.onLoad = () => {
           console.log('模型加载完毕')
+
+          console.log(this.scene);
+          
         }
       })
     })

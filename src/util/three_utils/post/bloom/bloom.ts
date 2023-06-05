@@ -4,9 +4,7 @@ import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass'
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass'
 import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass'
 import { FXAAShader } from 'three/examples/jsm/shaders/FXAAShader'
-import ThreeScene from '../../../ThreeScene'
-import { ThreeBaseApi } from '../../baseAPI'
-import { propsTransfer } from '../../transfer'
+
 
 export class InitBloom {
   bloomComposer!: EffectComposer
