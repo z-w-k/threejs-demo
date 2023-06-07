@@ -6,6 +6,8 @@ export default defineComponent({
     const mainStore = MainStore()
     const click = () => {
       mainStore.btIsEnter(true)
+      document.body.requestPointerLock()
+      
     }
     onMounted(() => {})
     return {
@@ -21,10 +23,10 @@ export default defineComponent({
         <Button
           class={[
             ' blur-sm  w-[10vw] !h-[7vh] !bg-transparent !border-2 !border-white !text-white',
-            `hover:blur-none hover:!bg-blue-400`
+            `hover:blur-none hover:!bg-white-400`
           ]}
           onClick={this.click}>
-          首页
+          开始
         </Button>
       </div>
     )

@@ -3,6 +3,7 @@ import { Capsule } from 'three/examples/jsm/math/Capsule'
 import { Octree } from 'three/examples/jsm/math/Octree'
 import * as THREE from 'three'
 import { OctreeHelper } from 'three/examples/jsm/helpers/OctreeHelper'
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 export class FpsControls {
   playerCollider = new Capsule(
     new THREE.Vector3(0, 0.35, 0),
@@ -41,16 +42,19 @@ export class FpsControls {
     document.addEventListener('keyup', (event) => {
       this.keyStates[event.code] = false
     })
-    this.dom.addEventListener('mousedown', () => {
-      document.body.requestPointerLock()
-    })
+    // this.dom.addEventListener('mousedown', () => {
+    //   document.body.requestPointerLock()
+    // })
     document.body.addEventListener('mousemove', (event) => {
       if (document.pointerLockElement === document.body) {
         this.camera.rotation.y -= event.movementX / 500
         this.camera.rotation.x -= event.movementY / 500
         // this.camera.getWorldDirection(this.playerDirection)
-        console.log('camera', this.camera.position)
-        console.log('target', this.playerDirection)
+        // console.log('camera', this.camera.position)
+        let directional=new THREE.Vector3()
+        this.camera.getWorldDirection(directional)
+        console.log('worldDirectional',directional);
+        
       }
     })
   }
@@ -157,7 +161,7 @@ export class FpsControls {
     // we look for collisions in substeps to mitigate the risk of
     // an object traversing another too quickly for detection.
     // this.controls.update()
-
+    
     for (let i = 0; i < this.STEPS_PER_FRAME; i++) {
       this.playerControls(deltaTime)
 

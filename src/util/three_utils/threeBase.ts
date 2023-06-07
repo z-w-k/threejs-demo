@@ -3,15 +3,22 @@ import { CameraConfig } from '../ThreeScene'
 import * as THREE from 'three'
 import { API } from '../../api/api'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
-import { ThreeBaseApi } from './baseAPI'
 import Stats from 'three/examples/jsm/libs/stats.module'
 import { GUI } from 'three/examples/jsm/libs/lil-gui.module.min'
 import { Octree } from 'three/examples/jsm/math/Octree'
-export class ThreeBase extends ThreeBaseApi {
+export class ThreeBase {
+  domElement!: HTMLElement
+  scene!: THREE.Scene
+  camera!: THREE.PerspectiveCamera
+  renderer!: THREE.WebGLRenderer
+  controls!: OrbitControls
+  light!: THREE.Light
+  stats!: Stats
+  gui!: GUI
+  worldOctree!: Octree
   three = THREE
   loadingManager = new THREE.LoadingManager()
   constructor(public dom: HTMLElement, public camConfig: CameraConfig) {
-    super()
     this.stats = new Stats()
     this.gui = new GUI({ width: 200 })
     this.worldOctree = new Octree()
@@ -23,11 +30,11 @@ export class ThreeBase extends ThreeBaseApi {
     this.scene = this.initScene()
     this.camera = this.initCamera()
     this.renderer = this.initRenderer()
-    // this.controls = this.initControls()
+    this.controls = this.initControls()
     this.light = this.initLight()
     this.camera.rotation.order = 'YXZ'
     this.scene.background = new THREE.Color(0x88ccee)
-    this.scene.fog = new THREE.Fog(new THREE.Color('rgb(100,100,150)'), 0, 60)
+    this.scene.fog = new THREE.Fog(new THREE.Color('rgb(100,100,150)'), 0, 1000)
     this.scene.add(this.camera)
     this.scene.add(this.light)
   }
@@ -70,11 +77,10 @@ export class ThreeBase extends ThreeBaseApi {
   initControls = () => {
     const controls = new OrbitControls(this.camera, this.renderer.domElement)
     controls.enableDamping = true // 手动操作更顺滑
-    // controls.update()
-    // controls.enabled = true
-    // controls.enableZoom = true
-    // controls.enablePan = true
-    // controls.enableRotate = true
+    controls.update()
+    controls.enableZoom = true
+    controls.enablePan = true
+    controls.enableRotate = true
     // controls.minDistance = 40
     // controls.maxDistance = 80
     return controls

@@ -14,7 +14,7 @@ export default defineComponent({
     const context = () => {
       return (
         <div>
-          <LayoutModule />
+          {/* <LayoutModule /> */}
           <RouterView
             class={[
               ' pointer-events-none absolute top-[50%] left-[0] translate-y-[-50%] h-[80%] w-[100%] flex items-center justify-center text-white'

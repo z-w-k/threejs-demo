@@ -68,6 +68,7 @@ export const MainStore = defineStore('mainStore', () => {
     points: new FlyToPosition([0, -1000, 0], [0, -1000, 20], [1, 1])
   })
 
+
   const init = (homeContainer: HTMLElement) => {
     container.value = homeContainer
     threeScene = new ThreeScene(homeContainer)
@@ -80,9 +81,19 @@ export const MainStore = defineStore('mainStore', () => {
     utilSet.value.temp = temp
     // const box = new THREE.Mesh(new THREE.BoxGeometry(1000,1000,1000),new THREE.MeshBasicMaterial({color:'white'}))
     // threeScene.scene.add(box)
-    // threeScene.camera.position.set(50, 0, 50)
-    // threeScene.controls.target.set(0, 0, 0)
-    // threeScene.controls.update()
+    threeScene.camera.position.set(50, 0, 50)
+    threeScene.controls.target.set(0, 0, 0)
+    threeScene.controls.update()
+
+    document.addEventListener('pointerlockchange',(e)=>{
+      console.log(e);
+      if(document.pointerLockElement){
+        console.log('锁定');
+      }else{
+        console.log('取消锁定');
+        btIsEnter(false)
+      }
+    })
     window.addEventListener('resize', threeScene.onWindowResize)
   }
 
@@ -92,21 +103,26 @@ export const MainStore = defineStore('mainStore', () => {
     return position as FlyToPosition
   }
 
+
   const btIsEnter = (isEnter: boolean) => {
+    if(isEnter){
+      threeScene.enterFps()
+    }else{
+      threeScene.enterOrbit()
+    }
+    threeScene.controls.enabled= !isEnter
     enter.value = isEnter
-    const target = isEnter ? 'enterPosition' : 'homePosition'
-    flyTo(target as keyof ScenePosition)
+    // const target = isEnter ? 'enterPosition' : 'homePosition'
+    // flyTo(target as keyof ScenePosition)
   }
+
+
 
   let animateId
   const animate = () => {
     // tweenJS.tween.update()
     // homePoints.update()
-    threeScene.animate()
-    // threeScene.scene.traverse(darkenNonBloomed) // 隐藏不需要辉光的物体
-    // bloomComposer.render()
-    // threeScene.scene.traverse(restoreMaterial) // 还原
-    // finalComposer.render()
+    threeScene.animate(enter.value)
     animateId = requestAnimationFrame(animate)
   }
 
