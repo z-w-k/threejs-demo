@@ -69,15 +69,16 @@ export class ThreeBase {
       logarithmicDepthBuffer: true
     })
     renderer.setSize(domElement.clientWidth, domElement.clientHeight)
-    renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 0.5;
+    renderer.toneMapping = THREE.ACESFilmicToneMapping
+    renderer.toneMappingExposure = 0.5
+    renderer.shadowMap.enabled = true
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap
     domElement.appendChild(renderer.domElement)
     return renderer
   }
   initControls = () => {
     const controls = new OrbitControls(this.camera, this.renderer.domElement)
     controls.enableDamping = true // 手动操作更顺滑
-    controls.update()
     controls.enableZoom = true
     controls.enablePan = true
     controls.enableRotate = true
@@ -87,7 +88,7 @@ export class ThreeBase {
   }
   initLight = () => {
     // 环境光
-    const AmbientLight = new THREE.AmbientLight('#fff',.2)
+    const AmbientLight = new THREE.AmbientLight('#fff', 0.2)
     return AmbientLight
   }
   clearScene = (scene: THREE.Object3D) => {
@@ -116,21 +117,22 @@ export class ThreeBase {
         this.scene.add(gltf.scene)
         this.scene.traverse((obj) => {
           if (obj.type === 'Mesh') {
-            obj.receiveShadow =true
-            obj.castShadow=true
+            obj.receiveShadow = true
+            obj.castShadow = true
             if (obj.name === 'ground') {
-              console.log(obj);
-              
-              // obj.castShadow=false
+              console.log(obj)
+              obj.castShadow = false
               this.worldOctree.fromGraphNode(obj)
+            }
+            if (obj.name === 'water') {
+              obj.receiveShadow = false
             }
           }
         })
         this.loadingManager.onLoad = () => {
           console.log('模型加载完毕')
 
-          console.log(this.scene);
-          
+          console.log(this.scene)
         }
       })
     })

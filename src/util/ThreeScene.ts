@@ -29,7 +29,6 @@ class ThreeScene extends ThreeBase {
       worldOctree
     )
     this.sky = new InitSky(scene, camera, renderer, stats, gui)
-    console.log(this.fpsControls)
   }
 
   onWindowResize = () => {
@@ -47,19 +46,14 @@ class ThreeScene extends ThreeBase {
     const playerCollider = this.fpsControls.playerCollider
     playerCollider.start.copy(this.camera.position)
     playerCollider.end.copy(this.camera.position)
-    playerCollider.end.y += 0.6
+    playerCollider.start.y -= 0.6
   }
   enterOrbit = () => {
     const cwd = new Vector3()
     this.camera.getWorldDirection(cwd)
-    const cp = this.camera.position
-    this.controls.target.copy(
-      new Vector3(
-        cp.x + cwd.x * 10,
-        cp.y + cwd.y * 10,
-        cp.z + cwd.z * 10
-      )
-    )
+    const cp =this.camera.position
+    this.controls.target.set(cp.x + cwd.x, cp.y + cwd.y, cp.z + cwd.z)
+    this.controls.update()
   }
   animate = (isEnter: boolean) => {
     this.stats.update()

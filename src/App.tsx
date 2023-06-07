@@ -29,7 +29,7 @@ export default defineComponent({
         <div
           ref='container'
           class={'fixed top-[0] left-0 w-[100%] h-[100%] text-black'}>
-          {!mainStore.enter ? <HomeButton /> : context()}
+          {!mainStore.menu ? <HomeButton /> : context()}
         </div>
       )
     }
@@ -43,7 +43,6 @@ export default defineComponent({
   render() {
     return (
       <div class='relative w-[100vw] h-[100vh] text-black'>
-        123456
         {this.homeContainer()}
       </div>
     )

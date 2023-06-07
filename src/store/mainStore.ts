@@ -1,19 +1,8 @@
 import ThreeScene from '../util/ThreeScene'
 import HomePoints from '../util/homePoints'
 import TweenJS from '../util/tween'
-import {
-  Layers,
-  MeshBasicMaterial,
-  Scene,
-  ShaderMaterial,
-  Vector2,
-  Vector3
-} from 'three'
+import { Vector3 } from 'three'
 import TemperatureField from '../util/temperature'
-import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass'
-import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass'
-import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer'
-import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass'
 
 interface UtilSet {
   threeScene?: ThreeScene
@@ -60,6 +49,7 @@ export const MainStore = defineStore('mainStore', () => {
   let temp!: TemperatureField
   const container = ref()
   const enter = ref(false)
+  const menu = ref(false)
   const utilSet: Ref<UtilSet> = ref({})
   const scenePosition: Ref<ScenePosition> = ref({
     heatMap: new FlyToPosition([0, -2200, 0], [0, -2000, 20], [1, 1]),
@@ -67,7 +57,6 @@ export const MainStore = defineStore('mainStore', () => {
     enterPosition: new FlyToPosition([0, 0, 0], [0, 0, 5], [1, 1]),
     points: new FlyToPosition([0, -1000, 0], [0, -1000, 20], [1, 1])
   })
-
 
   const init = (homeContainer: HTMLElement) => {
     container.value = homeContainer
@@ -81,17 +70,22 @@ export const MainStore = defineStore('mainStore', () => {
     utilSet.value.temp = temp
     // const box = new THREE.Mesh(new THREE.BoxGeometry(1000,1000,1000),new THREE.MeshBasicMaterial({color:'white'}))
     // threeScene.scene.add(box)
-    threeScene.camera.position.set(50, 0, 50)
+    threeScene.camera.position.set(0, 0, 5)
     threeScene.controls.target.set(0, 0, 0)
     threeScene.controls.update()
 
-    document.addEventListener('pointerlockchange',(e)=>{
-      console.log(e);
-      if(document.pointerLockElement){
-        console.log('锁定');
-      }else{
-        console.log('取消锁定');
-        btIsEnter(false)
+    document.addEventListener('pointerlockchange', (e) => {
+      if (document.pointerLockElement) {
+        console.log('锁定')
+        threeScene.controls.enabled = false
+        enter.value = true
+        threeScene.enterFps()
+      } else {
+        console.log('取消锁定')
+        enter.value = false
+        threeScene.enterOrbit()
+        threeScene.controls.enabled = true
+        setTimeout(() => btIsEnter(false), 1000)
       }
     })
     window.addEventListener('resize', threeScene.onWindowResize)
@@ -103,20 +97,17 @@ export const MainStore = defineStore('mainStore', () => {
     return position as FlyToPosition
   }
 
-
   const btIsEnter = (isEnter: boolean) => {
-    if(isEnter){
-      threeScene.enterFps()
-    }else{
-      threeScene.enterOrbit()
+    if (isEnter) {
+      document.body.requestPointerLock()
     }
-    threeScene.controls.enabled= !isEnter
-    enter.value = isEnter
+    menu.value = isEnter
+
+    console.log('立即')
+
     // const target = isEnter ? 'enterPosition' : 'homePosition'
     // flyTo(target as keyof ScenePosition)
   }
-
-
 
   let animateId
   const animate = () => {
@@ -126,7 +117,7 @@ export const MainStore = defineStore('mainStore', () => {
     animateId = requestAnimationFrame(animate)
   }
 
-  return { utilSet, enter, init, animate, btIsEnter, flyTo }
+  return { utilSet, menu, init, animate, btIsEnter, flyTo }
 })
 
 export const HomeStore = defineStore('homeStore', () => {})

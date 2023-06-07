@@ -6,7 +6,6 @@ export default defineComponent({
     const mainStore = MainStore()
     const click = () => {
       mainStore.btIsEnter(true)
-      document.body.requestPointerLock()
       
     }
     onMounted(() => {})

@@ -24,26 +24,33 @@ export class InitSky {
   ) {
     this.initSky()
   }
-  initSun(){
-    const directionalLight = new THREE.DirectionalLight(0xffffff,3)
+  initDir() {
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 2)
     directionalLight.castShadow = true
-    directionalLight.shadow.mapSize.width = 512; // default
-    directionalLight.shadow.mapSize.height = 512; // default
-    directionalLight.shadow.camera.near = 0.5; // default
-    directionalLight.shadow.camera.far = 5000; // default
-    const box = new THREE.Mesh(new THREE.BoxGeometry(150,150,150),new THREE.MeshStandardMaterial({color:'orange'}))
-    directionalLight.add(box)
+    directionalLight.shadow.mapSize.width = 1024 // default
+    directionalLight.shadow.mapSize.height = 1024 // default
+
+    // 设置三维场景计算阴影的范围
+    directionalLight.shadow.camera.left = -50
+    directionalLight.shadow.camera.right = 50
+    directionalLight.shadow.camera.top = 200
+    directionalLight.shadow.camera.bottom = -200
+    directionalLight.shadow.camera.near = 0.5
+    directionalLight.shadow.camera.far = 1200
+
     directionalLight.position.setY(1000)
+    console.log(directionalLight)
+
     return directionalLight
   }
   initSky() {
     // Add Sky
     const sky = this.sky
     sky.scale.setScalar(450000)
-    const sun = this.initSun()
+    const sun = this.initDir()
     this.scene.add(sun)
     this.scene.add(sky)
-    
+
     /// GUI
     const effectController = this.effectController
 
@@ -64,7 +71,7 @@ export class InitSky {
       this.renderer.toneMappingExposure = effectController.exposure
       this.renderer.render(this.scene, this.camera)
     }
-    
+
     const gui = this.gui
 
     gui.add(effectController, 'turbidity', 0.0, 20.0, 0.1).onChange(guiChanged)
@@ -80,18 +87,17 @@ export class InitSky {
     gui.add(effectController, 'exposure', 0, 50, 0.0001).onChange(guiChanged)
 
     guiChanged()
-    console.log(sky);
-
+    console.log(sky)
   }
   animate = () => {
-    if (this.effectController.elevation === 90){
+    if (this.effectController.elevation === 90) {
       this.effectController.azimuth = 0
     }
-    
-    if (this.effectController.elevation === 0){
+
+    if (this.effectController.elevation === 0) {
       this.effectController.azimuth = 180
     }
-      this.effectController.azimuth === 0
+    this.effectController.azimuth === 0
       ? this.effectController.elevation--
       : this.effectController.elevation++
   }

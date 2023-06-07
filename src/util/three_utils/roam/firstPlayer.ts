@@ -49,11 +49,10 @@ export class FpsControls {
       if (document.pointerLockElement === document.body) {
         this.camera.rotation.y -= event.movementX / 500
         this.camera.rotation.x -= event.movementY / 500
-        // this.camera.getWorldDirection(this.playerDirection)
-        // console.log('camera', this.camera.position)
-        let directional=new THREE.Vector3()
-        this.camera.getWorldDirection(directional)
-        console.log('worldDirectional',directional);
+        // const cd = new THREE.Vector3()
+        // this.camera.getWorldDirection(cd)
+        // console.log('player',this.playerDirection);
+        // console.log('camera', cd)
         
       }
     })
