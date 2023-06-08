@@ -5,9 +5,9 @@ import { GUI } from 'three/examples/jsm/libs/lil-gui.module.min'
 export class InitSkyModule {
   sky = new Sky()
   sun = new THREE.Vector3()
-  change=true
+  change = true
   effectController = {
-    turbidity: .9,
+    turbidity: 0.9,
     rayleigh: 4,
     mieCoefficient: 0.015,
     mieDirectionalG: 0.99,
@@ -51,9 +51,8 @@ export class InitSkyModule {
     sky.scale.setScalar(450000)
     const dir = this.initDir()
     this.scene.add(dir)
-    
+
     this.scene.add(sky)
-    
 
     /// GUI
     const effectController = this.effectController
@@ -76,20 +75,30 @@ export class InitSkyModule {
       this.renderer.render(this.scene, this.camera)
     }
 
-    const gui = this.gui
+    const skyFolder = this.gui.addFolder('skyFolder')
 
-    gui.add(effectController, 'turbidity', 0.0, 20.0, 0.1).onChange(guiChanged)
-    gui.add(effectController, 'rayleigh', 0.0, 4, 0.001).onChange(guiChanged)
-    gui
+    skyFolder
+      .add(effectController, 'turbidity', 0.0, 20.0, 0.1)
+      .onChange(guiChanged)
+    skyFolder
+      .add(effectController, 'rayleigh', 0.0, 4, 0.001)
+      .onChange(guiChanged)
+    skyFolder
       .add(effectController, 'mieCoefficient', 0.0, 0.1, 0.001)
       .onChange(guiChanged)
-    gui
+    skyFolder
       .add(effectController, 'mieDirectionalG', 0.0, 1, 0.001)
       .onChange(guiChanged)
-    gui.add(effectController, 'elevation', 0, 90, 0.1).onChange(guiChanged)
-    gui.add(effectController, 'azimuth', -180, 180, 0.1).onChange(guiChanged)
-    gui.add(effectController, 'exposure', 0, 50, 0.0001).onChange(guiChanged)
-
+    skyFolder
+      .add(effectController, 'elevation', 0, 90, 0.1)
+      .onChange(guiChanged)
+    skyFolder
+      .add(effectController, 'azimuth', -180, 180, 0.1)
+      .onChange(guiChanged)
+    skyFolder
+      .add(effectController, 'exposure', 0, 50, 0.0001)
+      .onChange(guiChanged)
+    skyFolder.open()
     guiChanged()
   }
   animate = () => {
@@ -98,14 +107,14 @@ export class InitSkyModule {
       this.change = true
     }
 
-    if (this.effectController.elevation <1) {
+    if (this.effectController.elevation < 1) {
       this.effectController.azimuth = 180
       this.change = false
     }
-    console.log(this.effectController);
-    
+    console.log(this.effectController)
+
     this.change
-      ? this.effectController.elevation-=1
-      : this.effectController.elevation+=1
+      ? (this.effectController.elevation -= 1)
+      : (this.effectController.elevation += 1)
   }
 }

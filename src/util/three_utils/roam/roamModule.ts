@@ -28,7 +28,7 @@ export class FpsControls {
     this.initFps()
   }
   initFps = () => {
-    const helper = new OctreeHelper(this.worldOctree)
+    const helper = new OctreeHelper(this.worldOctree,new THREE.Color('red'))
     helper.visible = false
     this.scene.add(helper)
 

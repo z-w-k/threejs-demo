@@ -13,9 +13,9 @@ export class ThreeBase {
   renderer!: THREE.WebGLRenderer
   controls!: OrbitControls
   light!: THREE.Light
-  stats!: Stats
-  gui!: GUI
-  worldOctree!: Octree
+  stats= new Stats()
+  gui= new GUI({ width: 200 })
+  worldOctree = new Octree()
   three = THREE
   loadingManager = new THREE.LoadingManager()
   axesHelper = new THREE.AxesHelper(5)
@@ -26,9 +26,6 @@ export class ThreeBase {
     this.initBase()
   }
   initBase = () => {
-    this.stats = new Stats()
-    this.gui = new GUI({ width: 200 })
-    this.worldOctree = new Octree()
     this.scene = this.initScene()
     this.camera = this.initCamera()
     this.renderer = this.initRenderer()
@@ -58,7 +55,7 @@ export class ThreeBase {
   }
   initScene = () => {
     const scene = new THREE.Scene()
-    scene.background = new THREE.Color('black')
+    // scene.background = new THREE.Color('black')
     return scene
   }
   initCamera = () => {
