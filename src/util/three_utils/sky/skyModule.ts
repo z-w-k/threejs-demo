@@ -2,11 +2,12 @@ import { Sky } from 'three/examples/jsm/objects/Sky'
 import * as THREE from 'three'
 import { GUI } from 'three/examples/jsm/libs/lil-gui.module.min'
 
-export class InitSky {
+export class InitSkyModule {
   sky = new Sky()
   sun = new THREE.Vector3()
+  change=true
   effectController = {
-    turbidity: 6.1,
+    turbidity: .9,
     rayleigh: 4,
     mieCoefficient: 0.015,
     mieDirectionalG: 0.99,
@@ -46,10 +47,13 @@ export class InitSky {
   initSky() {
     // Add Sky
     const sky = this.sky
+    // sky.scale.setScalar(4500)
     sky.scale.setScalar(450000)
-    const sun = this.initDir()
-    this.scene.add(sun)
+    const dir = this.initDir()
+    this.scene.add(dir)
+    
     this.scene.add(sky)
+    
 
     /// GUI
     const effectController = this.effectController
@@ -87,18 +91,21 @@ export class InitSky {
     gui.add(effectController, 'exposure', 0, 50, 0.0001).onChange(guiChanged)
 
     guiChanged()
-    console.log(sky)
   }
   animate = () => {
-    if (this.effectController.elevation === 90) {
+    if (this.effectController.elevation > 89) {
       this.effectController.azimuth = 0
+      this.change = true
     }
 
-    if (this.effectController.elevation === 0) {
+    if (this.effectController.elevation <1) {
       this.effectController.azimuth = 180
+      this.change = false
     }
-    this.effectController.azimuth === 0
-      ? this.effectController.elevation--
-      : this.effectController.elevation++
+    console.log(this.effectController);
+    
+    this.change
+      ? this.effectController.elevation-=1
+      : this.effectController.elevation+=1
   }
 }

@@ -17,7 +17,7 @@ export class FpsControls {
   keyStates: { [args: string]: any } = {}
   clock = new THREE.Clock()
   STEPS_PER_FRAME = 5
- 
+
   constructor(
     public dom: HTMLElement,
     public scene: THREE.Scene,
@@ -53,7 +53,6 @@ export class FpsControls {
         // this.camera.getWorldDirection(cd)
         // console.log('player',this.playerDirection);
         // console.log('camera', cd)
-        
       }
     })
   }
@@ -160,7 +159,7 @@ export class FpsControls {
     // we look for collisions in substeps to mitigate the risk of
     // an object traversing another too quickly for detection.
     // this.controls.update()
-    
+
     for (let i = 0; i < this.STEPS_PER_FRAME; i++) {
       this.playerControls(deltaTime)
 

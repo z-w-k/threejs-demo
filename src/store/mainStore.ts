@@ -48,7 +48,7 @@ export const MainStore = defineStore('mainStore', () => {
   let tweenJS!: TweenJS
   let temp!: TemperatureField
   const container = ref()
-  const enter = ref(false)
+
   const menu = ref(false)
   const utilSet: Ref<UtilSet> = ref({})
   const scenePosition: Ref<ScenePosition> = ref({
@@ -60,7 +60,7 @@ export const MainStore = defineStore('mainStore', () => {
 
   const init = (homeContainer: HTMLElement) => {
     container.value = homeContainer
-    threeScene = new ThreeScene(homeContainer)
+    threeScene = new ThreeScene(homeContainer,{ fov: 60, near: 0.1, far: 1500 })
     // homePoints = new HomePoints(homeContainer, threeScene)
     tweenJS = new TweenJS(threeScene)
     temp = new TemperatureField(threeScene)
@@ -77,14 +77,10 @@ export const MainStore = defineStore('mainStore', () => {
     document.addEventListener('pointerlockchange', (e) => {
       if (document.pointerLockElement) {
         console.log('锁定')
-        threeScene.controls.enabled = false
-        enter.value = true
         threeScene.enterFps()
       } else {
         console.log('取消锁定')
-        enter.value = false
         threeScene.enterOrbit()
-        threeScene.controls.enabled = true
         setTimeout(() => btIsEnter(false), 1000)
       }
     })
@@ -102,7 +98,6 @@ export const MainStore = defineStore('mainStore', () => {
       document.body.requestPointerLock()
     }
     menu.value = isEnter
-
     console.log('立即')
 
     // const target = isEnter ? 'enterPosition' : 'homePosition'
@@ -113,7 +108,7 @@ export const MainStore = defineStore('mainStore', () => {
   const animate = () => {
     // tweenJS.tween.update()
     // homePoints.update()
-    threeScene.animate(enter.value)
+    threeScene.animate()
     animateId = requestAnimationFrame(animate)
   }
 

@@ -5,8 +5,7 @@ import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass'
 import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass'
 import { FXAAShader } from 'three/examples/jsm/shaders/FXAAShader'
 
-
-export class InitBloom {
+export class InitBloomModule {
   bloomComposer!: EffectComposer
   finalComposer!: EffectComposer
   materials: {
@@ -22,7 +21,6 @@ export class InitBloom {
   bloomLayer = new THREE.Layers() // 跟辉光光晕有关的变量
   darkMaterial = new THREE.MeshBasicMaterial({
     map: new THREE.Texture(),
-    transparent: true
   }) // 跟辉光光晕有关的变量
   constructor(
     public domElement: HTMLElement,
@@ -38,7 +36,7 @@ export class InitBloom {
       exposure: 0.5,
       bloomStrength: 1,
       bloomThreshold: 0,
-      bloomRadius: 1,
+      bloomRadius: 0,
       scene: 'Scene with Glow'
     }
 
@@ -115,8 +113,8 @@ export class InitBloom {
   darkenNonBloomed = (obj: THREE.Object3D<THREE.Event>) => {
     if (obj instanceof THREE.Scene) {
       // 此处忽略Scene，否则场景背景会被影响
-      obj.background = null
       this.materials.scene = obj.background
+      obj.background = null
     }
     if (
       obj instanceof THREE.Sprite || // 此处忽略Sprite
@@ -130,8 +128,10 @@ export class InitBloom {
   restoreMaterial: (obj: THREE.Object3D<THREE.Event>) => any = (obj) => {
     const materials = this.materials
     if (obj instanceof THREE.Scene) {
-      // obj.background = materials.scene;
-      obj.background = null
+      obj.background = materials.scene as
+        | THREE.Texture
+        | THREE.Color
+        | THREE.CubeTexture
       delete materials.scene
     }
     if (materials[obj.uuid]) {

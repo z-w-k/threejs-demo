@@ -6,8 +6,8 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 import Stats from 'three/examples/jsm/libs/stats.module'
 import { GUI } from 'three/examples/jsm/libs/lil-gui.module.min'
 import { Octree } from 'three/examples/jsm/math/Octree'
+
 export class ThreeBase {
-  domElement!: HTMLElement
   scene!: THREE.Scene
   camera!: THREE.PerspectiveCamera
   renderer!: THREE.WebGLRenderer
@@ -18,15 +18,17 @@ export class ThreeBase {
   worldOctree!: Octree
   three = THREE
   loadingManager = new THREE.LoadingManager()
-  constructor(public dom: HTMLElement, public camConfig: CameraConfig) {
+  axesHelper = new THREE.AxesHelper(5)
+  constructor(
+    public domElement: HTMLElement,
+    public cameraConfig: CameraConfig
+  ) {
+    this.initBase()
+  }
+  initBase = () => {
     this.stats = new Stats()
     this.gui = new GUI({ width: 200 })
     this.worldOctree = new Octree()
-    this.initBase()
-    this.initStats()
-    this.loadModel()
-  }
-  initBase = () => {
     this.scene = this.initScene()
     this.camera = this.initCamera()
     this.renderer = this.initRenderer()
@@ -37,11 +39,22 @@ export class ThreeBase {
     this.scene.fog = new THREE.Fog(new THREE.Color('rgb(100,100,150)'), 0, 1000)
     this.scene.add(this.camera)
     this.scene.add(this.light)
+    this.initStats()
+    this.loadModel()
+    this.initAxes()
+  }
+  initAxes = () => {
+    this.axesHelper.visible = false
+    const axesFolder = this.gui.addFolder('Axes')
+    axesFolder.add(this.axesHelper,'visible').name('visible')
+    axesFolder.add(this.axesHelper.position,'y',-15,15,0.1).name('y')
+    axesFolder.open()
+    this.scene.add(this.axesHelper)
   }
   initStats() {
     this.stats.dom.style.position = 'absolute'
     this.stats.dom.style.top = '0px'
-    this.dom.appendChild(this.stats.dom)
+    this.domElement.appendChild(this.stats.dom)
   }
   initScene = () => {
     const scene = new THREE.Scene()
@@ -49,8 +62,8 @@ export class ThreeBase {
     return scene
   }
   initCamera = () => {
-    const cameraConfig = this.camConfig
-    const domElement = this.dom
+    const cameraConfig = this.cameraConfig
+    const domElement = this.domElement
     new THREE.PerspectiveCamera()
     const camera = new THREE.PerspectiveCamera(
       cameraConfig.fov,
@@ -61,7 +74,7 @@ export class ThreeBase {
     return camera
   }
   initRenderer = () => {
-    const domElement = this.dom
+    const domElement = this.domElement
     const renderer = new THREE.WebGLRenderer({
       antialias: true,
       alpha: true,
@@ -94,7 +107,7 @@ export class ThreeBase {
   clearScene = (scene: THREE.Object3D) => {
     scene.traverse((child: THREE.Object3D) => {
       if ((<THREE.Mesh>child).material) {
-        // child.material.dispose && child.material.dispose()
+        ;(<any>child).material._listeners.dispose[0]()
       }
       if ((<THREE.Mesh>child).geometry) {
         ;(<THREE.Mesh>child).geometry.dispose()
@@ -110,13 +123,12 @@ export class ThreeBase {
   }
   loadModel = async () => {
     const modelUrl = await API.getModel()
-    console.log(modelUrl.data instanceof Array)
-
     modelUrl.data.forEach((url: string) => {
       new GLTFLoader(this.loadingManager).load(url, (gltf) => {
         this.scene.add(gltf.scene)
         this.scene.traverse((obj) => {
           if (obj.type === 'Mesh') {
+            obj.layers.enable(0)
             obj.receiveShadow = true
             obj.castShadow = true
             if (obj.name === 'ground') {

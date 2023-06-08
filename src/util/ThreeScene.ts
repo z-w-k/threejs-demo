@@ -1,26 +1,31 @@
-import { FpsControls } from './three_utils/roam/firstPlayer'
-import { InitBloom } from './three_utils/post/bloom/bloom'
+import { FpsControls } from './three_utils/roam/roamModule'
+import { InitBloomModule } from './three_utils/post/bloom/bloomModule'
 import { ThreeBase } from './three_utils/threeBase'
-import { InitSky } from './three_utils/sky/sky'
-import { Vector3 } from 'three'
+import { InitSkyModule } from './three_utils/sky/skyModule'
+import * as THREE from 'three'
+import { InitWaterModule } from './three_utils/water/waterModule'
+
+// 'textures/waternormals.jpg'
 export interface CameraConfig {
   fov: number
   near: number
   far: number
 }
 class ThreeScene extends ThreeBase {
-  windowHalfX: number = 0
-  windowHalfY: number = 0
-  bloom: InitBloom
+  bloomModule: InitBloomModule
+  skyModule: InitSkyModule
+  waterModule: InitWaterModule
   fpsControls: FpsControls
-  sky: InitSky
+  fpsStatus = false
+  controlsStatus = true
+
   constructor(
-    public domElement: HTMLElement,
-    public cameraConfig: CameraConfig = { fov: 60, near: 0.1, far: 1500 }
+    domElement: HTMLElement,
+    cameraConfig: CameraConfig = { fov: 60, near: 0.1, far: 1500 }
   ) {
     super(domElement, cameraConfig)
     const { scene, camera, renderer, stats, gui, worldOctree, controls } = this
-    this.bloom = new InitBloom(domElement, scene, camera, renderer)
+    this.bloomModule = new InitBloomModule(domElement, scene, camera, renderer)
     this.fpsControls = new FpsControls(
       domElement,
       scene,
@@ -28,12 +33,11 @@ class ThreeScene extends ThreeBase {
       gui,
       worldOctree
     )
-    this.sky = new InitSky(scene, camera, renderer, stats, gui)
+    this.skyModule = new InitSkyModule(scene, camera, renderer, stats, gui)
+    this.waterModule = new InitWaterModule(this.skyModule, scene, renderer, gui)
   }
 
   onWindowResize = () => {
-    this.windowHalfX = this.domElement.clientWidth / 2
-    this.windowHalfY = this.domElement.clientHeight / 2
     this.camera.aspect =
       this.domElement.clientWidth / this.domElement.clientHeight
     this.camera.updateProjectionMatrix()
@@ -43,26 +47,32 @@ class ThreeScene extends ThreeBase {
     )
   }
   enterFps = () => {
+    this.controls.enabled = false
+    this.controlsStatus = false
+    this.fpsStatus = true
     const playerCollider = this.fpsControls.playerCollider
     playerCollider.start.copy(this.camera.position)
     playerCollider.end.copy(this.camera.position)
     playerCollider.start.y -= 0.6
   }
   enterOrbit = () => {
-    const cwd = new Vector3()
+    this.fpsStatus = false
+    const cwd = new THREE.Vector3()
     this.camera.getWorldDirection(cwd)
-    const cp =this.camera.position
-    this.controls.target.set(cp.x + cwd.x, cp.y + cwd.y, cp.z + cwd.z)
+    const cp = this.camera.position
+    const tar:[number,number,number] = [(cp.x + cwd.x), (cp.y + cwd.y), (cp.z + cwd.z)]
+    this.controls.target.set(...tar)
     this.controls.update()
+    this.controlsStatus = true
+    this.controls.enabled = true
   }
-  animate = (isEnter: boolean) => {
+  animate = () => {
     this.stats.update()
-    if (isEnter) {
-      this.fpsControls.animate()
-    } else {
-      this.controls.update()
-    }
-    this.bloom.animate()
+    this.fpsStatus && this.fpsControls.animate()
+    this.controlsStatus && (this.controls.update(),this.axesHelper.position.copy(this.controls.target))
+    this.waterModule.animate()
+    // this.sky.animate()
+    this.bloomModule.animate()
   }
 }
 
