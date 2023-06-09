@@ -13,7 +13,7 @@ Object.keys(moduleRoutes)
 const routes:RouteRecordRaw[] = [
   {
     path: '/',
-    redirect:'/home',
+    redirect:'/mainMenu',
     children: childRoutes
   }
 ]

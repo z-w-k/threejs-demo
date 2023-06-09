@@ -1,9 +1,16 @@
 import { Button } from 'ant-design-vue'
-import { TagList } from '../layout/header/header'
+import { flyToPosition } from '../../store/mainStore';
+import { PropType } from 'vue';
+
+export interface TagList {
+  textList: { text: string; path: string; flyToPosition?: flyToPosition }[]
+  class: string
+}
+
 
 export default defineComponent({
   props: {
-    tagList: Object as PropType<TagList>,
+    tagList:{type:Object as PropType<TagList>,required: true},
     buttonClass: String || Array
   },
   setup(props, { emit }) {

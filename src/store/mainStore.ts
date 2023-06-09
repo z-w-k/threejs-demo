@@ -41,6 +41,7 @@ export interface ScenePosition {
   heatMap: FlyToPosition
   // homePosition:FlyToPosition,
 }
+  export type OnDownloadProgress = (e:any)=>void
 
 export const MainStore = defineStore('mainStore', () => {
   let threeScene!: ThreeScene
@@ -48,8 +49,8 @@ export const MainStore = defineStore('mainStore', () => {
   let tweenJS!: TweenJS
   let temp!: TemperatureField
   const container = ref()
-
-  const menu = ref(false)
+  const isMask = ref(false)
+  const menu = ref(true)
   const utilSet: Ref<UtilSet> = ref({})
   const scenePosition: Ref<ScenePosition> = ref({
     heatMap: new FlyToPosition([0, -2200, 0], [0, -2000, 20], [1, 1]),
@@ -77,14 +78,19 @@ export const MainStore = defineStore('mainStore', () => {
     document.addEventListener('pointerlockchange', (e) => {
       if (document.pointerLockElement) {
         console.log('锁定')
+        menu.value=false
         threeScene.enterFps()
       } else {
         console.log('取消锁定')
         threeScene.enterOrbit()
-        setTimeout(() => btIsEnter(false), 1000)
+        menu.value=true
       }
     })
     window.addEventListener('resize', threeScene.onWindowResize)
+  }
+
+  const onDownloadProgress:OnDownloadProgress = (e)=>{
+    console.log(e,1);
   }
 
   const flyTo = (positionName: keyof ScenePosition) => {
@@ -93,15 +99,12 @@ export const MainStore = defineStore('mainStore', () => {
     return position as FlyToPosition
   }
 
-  const btIsEnter = (isEnter: boolean) => {
-    if (isEnter) {
+  const requestPointerLock = () => {
+    try {
       document.body.requestPointerLock()
+    } catch (error) {
+      
     }
-    menu.value = isEnter
-    console.log('立即')
-
-    // const target = isEnter ? 'enterPosition' : 'homePosition'
-    // flyTo(target as keyof ScenePosition)
   }
 
   let animateId
@@ -112,7 +115,7 @@ export const MainStore = defineStore('mainStore', () => {
     animateId = requestAnimationFrame(animate)
   }
 
-  return { utilSet, menu, init, animate, btIsEnter, flyTo }
+  return { utilSet, menu,isMask, init, animate, requestPointerLock, flyTo,onDownloadProgress }
 })
 
 export const HomeStore = defineStore('homeStore', () => {})

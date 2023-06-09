@@ -1,3 +1,4 @@
+import { MainStore } from './../../store/mainStore';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import { CameraConfig } from '../ThreeScene'
 import * as THREE from 'three'
@@ -6,7 +7,9 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 import Stats from 'three/examples/jsm/libs/stats.module'
 import { GUI } from 'three/examples/jsm/libs/lil-gui.module.min'
 import { Octree } from 'three/examples/jsm/math/Octree'
+import { pinia } from '../../main'
 
+let mainStore:ReturnType<typeof MainStore>
 export class ThreeBase {
   scene!: THREE.Scene
   camera!: THREE.PerspectiveCamera
@@ -23,7 +26,9 @@ export class ThreeBase {
     public domElement: HTMLElement,
     public cameraConfig: CameraConfig
   ) {
+    mainStore = MainStore()
     this.initBase()
+
   }
   initBase = () => {
     this.scene = this.initScene()
@@ -119,7 +124,7 @@ export class ThreeBase {
     console.log('clearScene')
   }
   loadModel = async () => {
-    const modelUrl = await API.getModel()
+    const modelUrl = await API.getModel(mainStore.onDownloadProgress)
     modelUrl.data.forEach((url: string) => {
       new GLTFLoader(this.loadingManager).load(url, (gltf) => {
         this.scene.add(gltf.scene)
@@ -140,7 +145,7 @@ export class ThreeBase {
         })
         this.loadingManager.onLoad = () => {
           console.log('模型加载完毕')
-
+          
           console.log(this.scene)
         }
       })

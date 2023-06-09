@@ -1,12 +1,11 @@
-import { Button } from 'ant-design-vue'
 import { MainStore } from '../../store/mainStore'
+import './homeButton.css'
 
 export default defineComponent({
   setup(props, { emit }) {
     const mainStore = MainStore()
     const click = () => {
-      mainStore.btIsEnter(true)
-      
+      mainStore.requestPointerLock()
     }
     onMounted(() => {})
     return {
@@ -17,16 +16,16 @@ export default defineComponent({
     return (
       <div
         class={[
-          'absolute bottom-[10%] left-[50%] translate-x-[-50%] flex items-center justify-center text-white'
+          'absolute bottom-[10%] left-[50%] translate-x-[-50%] flex items-center justify-center text-white bg-slate-600'
         ]}>
-        <Button
+        <button
           class={[
-            ' blur-sm  w-[10vw] !h-[7vh] !bg-transparent !border-2 !border-white !text-white',
+            'homeButton blur-sm  w-[10vw] !h-[7vh] !bg-transparent !border-2 !border-white !text-white text-2xl ',
             `hover:blur-none hover:!bg-white-400`
           ]}
           onClick={this.click}>
           开始
-        </Button>
+        </button>
       </div>
     )
   }

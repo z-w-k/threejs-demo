@@ -1,0 +1,14 @@
+.billet-enter-from,
+.billet-leave-to {
+  opacity: 0;
+}
+
+.billet-enter-to,
+.billet-leave-from {
+  opacity: 1;
+}
+
+.billet-enter-active,
+.billet-leave-active {
+  transition: opacity 0.4s ease;
+}

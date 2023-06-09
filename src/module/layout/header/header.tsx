@@ -1,11 +1,7 @@
 import { Vector3 } from 'three'
-import ButtonList from '../../utils/button'
+import ButtonList, { TagList } from '../../utils/menuButton'
 import { MainStore, flyToPosition } from '../../../store/mainStore'
 
-export interface TagList {
-  textList: { text: string; path: string; flyToPosition?: flyToPosition }[]
-  class: string
-}
 
 export default defineComponent({
   setup(props, { emit }) {
