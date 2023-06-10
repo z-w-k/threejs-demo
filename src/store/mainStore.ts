@@ -3,6 +3,7 @@ import HomePoints from '../util/homePoints'
 import TweenJS from '../util/tween'
 import { Vector3 } from 'three'
 import TemperatureField from '../util/temperature'
+import _ from 'lodash'
 
 interface UtilSet {
   threeScene?: ThreeScene
@@ -41,17 +42,13 @@ export interface ScenePosition {
   heatMap: FlyToPosition
   // homePosition:FlyToPosition,
 }
-  export type OnDownloadProgress = (e:any)=>void
+export type OnDownloadProgress = (e: any) => void
 
 export const MainStore = defineStore('mainStore', () => {
   let threeScene!: ThreeScene
-  let homePoints!: HomePoints
-  let tweenJS!: TweenJS
-  let temp!: TemperatureField
-  const container = ref()
   const isMask = ref(false)
-  const menu = ref(true)
   const utilSet: Ref<UtilSet> = ref({})
+  const router = useRouter()
   const scenePosition: Ref<ScenePosition> = ref({
     heatMap: new FlyToPosition([0, -2200, 0], [0, -2000, 20], [1, 1]),
     // homePosition: new FlyToPosition([1, 0, 0], [-2000, -2000, -2000], [2, 2]),
@@ -60,49 +57,49 @@ export const MainStore = defineStore('mainStore', () => {
   })
 
   const init = (homeContainer: HTMLElement) => {
-    container.value = homeContainer
-    threeScene = new ThreeScene(homeContainer,{ fov: 60, near: 0.1, far: 1500 })
-    // homePoints = new HomePoints(homeContainer, threeScene)
-    tweenJS = new TweenJS(threeScene)
-    temp = new TemperatureField(threeScene)
+    threeScene = new ThreeScene(homeContainer, {
+      fov: 60,
+      near: 0.1,
+      far: 1500
+    })
+    utilSet.value.tweenJS  = new TweenJS(threeScene)
+    utilSet.value.temp = new TemperatureField(threeScene)
+    lockMouse()
     utilSet.value.threeScene = threeScene
-    utilSet.value.homePoints = homePoints
-    utilSet.value.tweenJS = tweenJS
-    utilSet.value.temp = temp
-    // const box = new THREE.Mesh(new THREE.BoxGeometry(1000,1000,1000),new THREE.MeshBasicMaterial({color:'white'}))
-    // threeScene.scene.add(box)
-    threeScene.camera.position.set(0, 0, 5)
-    threeScene.controls.target.set(0, 0, 0)
-    threeScene.controls.update()
 
+  const resize = _.debounce(threeScene.onWindowResize,100)
+    window.addEventListener('resize', resize)
+  }
+
+  const lockMouse = () => {
     document.addEventListener('pointerlockchange', (e) => {
       if (document.pointerLockElement) {
         console.log('锁定')
-        menu.value=false
         threeScene.enterFps()
       } else {
         console.log('取消锁定')
         threeScene.enterOrbit()
-        menu.value=true
+        router.push({name:'pause'})
       }
     })
-    window.addEventListener('resize', threeScene.onWindowResize)
   }
 
-  const onDownloadProgress:OnDownloadProgress = (e)=>{
-    console.log(e,1);
+  const onDownloadProgress: OnDownloadProgress = (e) => {
+    console.log(e, 1)
   }
 
   const flyTo = (positionName: keyof ScenePosition) => {
     const position = scenePosition.value[positionName]
-    tweenJS.flyTo(position)
+    utilSet.value.tweenJS!.flyTo(position)
     return position as FlyToPosition
   }
 
   const requestPointerLock = () => {
     try {
       document.body.requestPointerLock()
+      
     } catch (error) {
+      console.log(error);
       
     }
   }
@@ -115,7 +112,15 @@ export const MainStore = defineStore('mainStore', () => {
     animateId = requestAnimationFrame(animate)
   }
 
-  return { utilSet, menu,isMask, init, animate, requestPointerLock, flyTo,onDownloadProgress }
+  return {
+    utilSet,
+    isMask,
+    init,
+    animate,
+    requestPointerLock,
+    flyTo,
+    onDownloadProgress
+  }
 })
 
 export const HomeStore = defineStore('homeStore', () => {})

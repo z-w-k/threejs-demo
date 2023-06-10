@@ -40,7 +40,6 @@ export class InitSkyModule {
     directionalLight.shadow.camera.far = 1200
 
     directionalLight.position.setY(1000)
-    console.log(directionalLight)
 
     return directionalLight
   }
@@ -111,7 +110,6 @@ export class InitSkyModule {
       this.effectController.azimuth = 180
       this.change = false
     }
-    console.log(this.effectController)
 
     this.change
       ? (this.effectController.elevation -= 1)

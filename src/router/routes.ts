@@ -1,20 +1,15 @@
 import { RouteRecordRaw } from 'vue-router'
-const moduleRoutes = import.meta.glob('../module/**/*.router.ts', {
+import { createChildrenRoutes } from './utils/createChildrenRoutes'
+const moduleRoutes = import.meta.glob('../module/*/*.router.ts', {
   eager: true,
   import: 'default'
 })
 
-let childRoutes: RouteRecordRaw[] = []
-
-Object.keys(moduleRoutes)
-  .forEach(k => (childRoutes = childRoutes.concat(moduleRoutes[k as string] as RouteRecordRaw)))
-
-
 const routes:RouteRecordRaw[] = [
   {
     path: '/',
-    redirect:'/mainMenu',
-    children: childRoutes
+    redirect:'/menu',
+    children: createChildrenRoutes('',moduleRoutes)
   }
 ]
 

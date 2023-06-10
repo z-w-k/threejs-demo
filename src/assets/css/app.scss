@@ -1,0 +1,21 @@
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+
+.fade-enter-to,
+.fade-leave-from {
+  opacity: 1;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s ease;
+}
+
+.threeScene{
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: -1;
+}

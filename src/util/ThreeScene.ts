@@ -5,7 +5,6 @@ import { InitSkyModule } from './three_utils/sky/skyModule'
 import * as THREE from 'three'
 import { InitWaterModule } from './three_utils/water/waterModule'
 
-// 'textures/waternormals.jpg'
 export interface CameraConfig {
   fov: number
   near: number
@@ -35,9 +34,15 @@ class ThreeScene extends ThreeBase {
     )
     this.skyModule = new InitSkyModule(scene, camera, renderer, stats, gui)
     this.waterModule = new InitWaterModule(this.skyModule, scene, renderer, gui)
+
+    camera.position.set(0, 0, 5)
+    controls.target.set(0, 0, 0)
+    controls.update()
   }
 
   onWindowResize = () => {
+    console.log(1);
+    
     this.camera.aspect =
       this.domElement.clientWidth / this.domElement.clientHeight
     this.camera.updateProjectionMatrix()
@@ -60,7 +65,11 @@ class ThreeScene extends ThreeBase {
     const cwd = new THREE.Vector3()
     this.camera.getWorldDirection(cwd)
     const cp = this.camera.position
-    const tar:[number,number,number] = [(cp.x + cwd.x), (cp.y + cwd.y), (cp.z + cwd.z)]
+    const tar: [number, number, number] = [
+      cp.x + cwd.x,
+      cp.y + cwd.y,
+      cp.z + cwd.z
+    ]
     this.controls.target.set(...tar)
     this.controls.update()
     this.controlsStatus = true
@@ -69,9 +78,10 @@ class ThreeScene extends ThreeBase {
   animate = () => {
     this.stats.update()
     this.fpsStatus && this.fpsControls.animate()
-    this.controlsStatus && (this.controls.update(),this.axesHelper.position.copy(this.controls.target))
+    this.controlsStatus &&
+      (this.controls.update(),
+      this.axesHelper.position.copy(this.controls.target))
     this.waterModule.animate()
-    // this.sky.animate()
     this.bloomModule.animate()
   }
 }

@@ -33,7 +33,6 @@ export default defineComponent({
         targetPosition,
         {  map: true, transparent: true }
       )!
-      console.log(box);
       const tempDataSet = createTempData()
       let i = 0
       player = setInterval(() => {

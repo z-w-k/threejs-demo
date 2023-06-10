@@ -76,7 +76,6 @@ export default class HomePoints extends Attrs {
       `
     })
     const points = new THREE.Points(geometry, material)
-    console.log(points);
     points.layers.enable(0)
     points.layers.toggle(1)
 

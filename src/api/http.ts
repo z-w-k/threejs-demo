@@ -5,8 +5,6 @@ const request = axios.create({
     
 })
 request.interceptors.request.use((config)=>{
-    console.log(config);
-
     return config
 },err=>{
     return Promise.reject(err)

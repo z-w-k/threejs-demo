@@ -78,7 +78,6 @@ export default defineComponent({
 
     const play =(emitter:ParticleSystem)=>{
       emitter.start()
-    console.log(mainStore.utilSet.threeScene?.scene);
 
     }
 

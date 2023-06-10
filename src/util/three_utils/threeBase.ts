@@ -1,4 +1,4 @@
-import { MainStore } from './../../store/mainStore';
+import { MainStore } from './../../store/mainStore'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import { CameraConfig } from '../ThreeScene'
 import * as THREE from 'three'
@@ -9,15 +9,15 @@ import { GUI } from 'three/examples/jsm/libs/lil-gui.module.min'
 import { Octree } from 'three/examples/jsm/math/Octree'
 import { pinia } from '../../main'
 
-let mainStore:ReturnType<typeof MainStore>
+let mainStore: ReturnType<typeof MainStore>
 export class ThreeBase {
   scene!: THREE.Scene
   camera!: THREE.PerspectiveCamera
   renderer!: THREE.WebGLRenderer
   controls!: OrbitControls
   light!: THREE.Light
-  stats= new Stats()
-  gui= new GUI({ width: 200 })
+  stats = new Stats()
+  gui = new GUI({ width: 200 })
   worldOctree = new Octree()
   three = THREE
   loadingManager = new THREE.LoadingManager()
@@ -28,7 +28,6 @@ export class ThreeBase {
   ) {
     mainStore = MainStore()
     this.initBase()
-
   }
   initBase = () => {
     this.scene = this.initScene()
@@ -48,14 +47,14 @@ export class ThreeBase {
   initAxes = () => {
     this.axesHelper.visible = false
     const axesFolder = this.gui.addFolder('Axes')
-    axesFolder.add(this.axesHelper,'visible').name('visible')
-    axesFolder.add(this.axesHelper.position,'y',-15,15,0.1).name('y')
+    axesFolder.add(this.axesHelper, 'visible').name('visible')
+    axesFolder.add(this.axesHelper.position, 'y', -15, 15, 0.1).name('y')
     axesFolder.open()
     this.scene.add(this.axesHelper)
   }
   initStats() {
     this.stats.dom.style.position = 'absolute'
-    this.stats.dom.style.top = '0px'
+    this.stats.dom.style.top = '50px'
     this.domElement.appendChild(this.stats.dom)
   }
   initScene = () => {
@@ -88,6 +87,7 @@ export class ThreeBase {
     renderer.toneMappingExposure = 0.5
     renderer.shadowMap.enabled = true
     renderer.shadowMap.type = THREE.PCFSoftShadowMap
+    renderer.domElement.className = 'threeScene'
     domElement.appendChild(renderer.domElement)
     return renderer
   }
@@ -134,7 +134,6 @@ export class ThreeBase {
             obj.receiveShadow = true
             obj.castShadow = true
             if (obj.name === 'ground') {
-              console.log(obj)
               obj.castShadow = false
               this.worldOctree.fromGraphNode(obj)
             }
@@ -145,8 +144,7 @@ export class ThreeBase {
         })
         this.loadingManager.onLoad = () => {
           console.log('模型加载完毕')
-          
-          console.log(this.scene)
+
         }
       })
     })
