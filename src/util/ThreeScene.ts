@@ -23,26 +23,34 @@ class ThreeScene extends ThreeBase {
     cameraConfig: CameraConfig = { fov: 60, near: 0.1, far: 1500 }
   ) {
     super(domElement, cameraConfig)
-    const { scene, camera, renderer, stats, gui, worldOctree, controls } = this
+    const {
+      scene,
+      camera,
+      renderer,
+      stats,
+      gui,
+      worldOctree,
+      controls,
+      commonGUI
+    } = this
     this.bloomModule = new InitBloomModule(domElement, scene, camera, renderer)
     this.fpsControls = new FpsControls(
       domElement,
       scene,
       camera,
       gui,
+      commonGUI,
       worldOctree
     )
     this.skyModule = new InitSkyModule(scene, camera, renderer, stats, gui)
     this.waterModule = new InitWaterModule(this.skyModule, scene, renderer, gui)
 
-    camera.position.set(0, 0, 5)
+    camera.position.set(5, 2, 0)
     controls.target.set(0, 0, 0)
     controls.update()
   }
 
   onWindowResize = () => {
-    console.log(1);
-    
     this.camera.aspect =
       this.domElement.clientWidth / this.domElement.clientHeight
     this.camera.updateProjectionMatrix()

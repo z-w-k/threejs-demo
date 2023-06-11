@@ -4,6 +4,7 @@ import TweenJS from '../util/tween'
 import { Vector3 } from 'three'
 import TemperatureField from '../util/temperature'
 import _ from 'lodash'
+import { API } from '../api/api'
 
 interface UtilSet {
   threeScene?: ThreeScene
@@ -49,6 +50,7 @@ export const MainStore = defineStore('mainStore', () => {
   const isMask = ref(false)
   const utilSet: Ref<UtilSet> = ref({})
   const router = useRouter()
+  const loadingProgress = ref(0)
   const scenePosition: Ref<ScenePosition> = ref({
     heatMap: new FlyToPosition([0, -2200, 0], [0, -2000, 20], [1, 1]),
     // homePosition: new FlyToPosition([1, 0, 0], [-2000, -2000, -2000], [2, 2]),
@@ -56,19 +58,27 @@ export const MainStore = defineStore('mainStore', () => {
     points: new FlyToPosition([0, -1000, 0], [0, -1000, 20], [1, 1])
   })
 
-  const init = (homeContainer: HTMLElement) => {
+  const init = async (homeContainer: HTMLElement) => {
     threeScene = new ThreeScene(homeContainer, {
       fov: 60,
       near: 0.1,
       far: 1500
     })
-    utilSet.value.tweenJS  = new TweenJS(threeScene)
+
+    utilSet.value.tweenJS = new TweenJS(threeScene)
     utilSet.value.temp = new TemperatureField(threeScene)
     lockMouse()
     utilSet.value.threeScene = threeScene
-
-  const resize = _.debounce(threeScene.onWindowResize,100)
+    const resize = _.debounce(threeScene.onWindowResize, 100)
     window.addEventListener('resize', resize)
+    const modelUrl = await API.getModel()
+    threeScene.loadModel(modelUrl.data, onDownloadProgress, () => {
+      console.log('模型加载完毕')
+      router.replace({name:'menu'})
+      console.log(loadingProgress.value);
+      
+    })
+    return 
   }
 
   const lockMouse = () => {
@@ -79,13 +89,13 @@ export const MainStore = defineStore('mainStore', () => {
       } else {
         console.log('取消锁定')
         threeScene.enterOrbit()
-        router.push({name:'pause'})
+        router.push({ name: 'pause' })
       }
     })
   }
 
   const onDownloadProgress: OnDownloadProgress = (e) => {
-    console.log(e, 1)
+    loadingProgress.value = Number(e.toFixed(2))
   }
 
   const flyTo = (positionName: keyof ScenePosition) => {
@@ -97,24 +107,24 @@ export const MainStore = defineStore('mainStore', () => {
   const requestPointerLock = () => {
     try {
       document.body.requestPointerLock()
-      
     } catch (error) {
-      console.log(error);
-      
+      console.log(error)
     }
   }
 
   let animateId
   const animate = () => {
+    animateId = requestAnimationFrame(animate)
+    if (loadingProgress.value !== 100) return
     // tweenJS.tween.update()
     // homePoints.update()
     threeScene.animate()
-    animateId = requestAnimationFrame(animate)
   }
 
   return {
     utilSet,
     isMask,
+    loadingProgress,
     init,
     animate,
     requestPointerLock,

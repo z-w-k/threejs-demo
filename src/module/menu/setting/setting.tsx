@@ -1,13 +1,13 @@
 import { RouterView } from 'vue-router'
-import MenuButton from '../../utils/menuButton'
-
+import MenuButton, { TagList } from '../../utils/menuButton'
 export default defineComponent({
   props: {},
   setup(props, { emit }) {
     const router = useRouter()
     const route = useRoute()
     const setting = ref()
-    const tagListSet = [
+    const from = ref('')
+    const tagListSet: TagList[] = [
       {
         textList: [
           { text: '常规', pathName: 'common' },
@@ -20,20 +20,16 @@ export default defineComponent({
 
     const goBack = (key: KeyboardEvent) => {
       if (key.key === 'Escape') {
-        if(router.currentRoute.value.fullPath.includes('menu')){
-          router.push({name:'menu'})
-        }else{
-          router.push({name:'pause'})
-        }
+        router.push({ name: from.value })
       }
     }
-    onUnmounted(() => {
-      window.removeEventListener('keyup', goBack)
-
-    })
 
     onMounted(() => {
+      from.value = route.query.origin as string
       window.addEventListener('keyup', goBack)
+    })
+    onUnmounted(() => {
+      window.removeEventListener('keyup', goBack)
     })
     return {
       tagListSet,
@@ -44,9 +40,7 @@ export default defineComponent({
     return (
       <div
         ref='setting'
-        class={[
-          'relative flex flex-col h-[100%] w-[100%] border-2 border-red-500 bg-opacity-30 bg-black'
-        ]}>
+        class={['menu_container', `flex flex-col  border-2 border-red-500`]}>
         <MenuButton class={['h-[10%] w-[100%]']} tagList={this.tagListSet[0]} />
         <RouterView
           class={[

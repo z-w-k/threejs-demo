@@ -1,4 +1,4 @@
-import { MainStore } from './../../store/mainStore'
+import { MainStore, OnDownloadProgress } from './../../store/mainStore'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import { CameraConfig } from '../ThreeScene'
 import * as THREE from 'three'
@@ -18,6 +18,7 @@ export class ThreeBase {
   light!: THREE.Light
   stats = new Stats()
   gui = new GUI({ width: 200 })
+  commonGUI!: GUI
   worldOctree = new Octree()
   three = THREE
   loadingManager = new THREE.LoadingManager()
@@ -30,6 +31,7 @@ export class ThreeBase {
     this.initBase()
   }
   initBase = () => {
+    this.commonGUI = this.gui.addFolder('common')
     this.scene = this.initScene()
     this.camera = this.initCamera()
     this.renderer = this.initRenderer()
@@ -41,7 +43,6 @@ export class ThreeBase {
     this.scene.add(this.camera)
     this.scene.add(this.light)
     this.initStats()
-    this.loadModel()
     this.initAxes()
   }
   initAxes = () => {
@@ -55,6 +56,9 @@ export class ThreeBase {
   initStats() {
     this.stats.dom.style.position = 'absolute'
     this.stats.dom.style.top = '50px'
+    this.stats.dom.hidden = true
+    this.commonGUI.add(this.stats.dom, 'hidden').name('hideStats')
+    this.commonGUI.open()
     this.domElement.appendChild(this.stats.dom)
   }
   initScene = () => {
@@ -123,30 +127,38 @@ export class ThreeBase {
     // this.domElement.innerHTML = ''
     console.log('clearScene')
   }
-  loadModel = async () => {
-    const modelUrl = await API.getModel(mainStore.onDownloadProgress)
-    modelUrl.data.forEach((url: string) => {
-      new GLTFLoader(this.loadingManager).load(url, (gltf) => {
-        this.scene.add(gltf.scene)
-        this.scene.traverse((obj) => {
-          if (obj.type === 'Mesh') {
-            obj.layers.enable(0)
-            obj.receiveShadow = true
-            obj.castShadow = true
-            if (obj.name === 'ground') {
-              obj.castShadow = false
-              this.worldOctree.fromGraphNode(obj)
+  loadModel = async (
+    modelUrl: Array<string>,
+    onDownloadProgress: OnDownloadProgress,
+    onLoaded: () => void
+  ) => {
+    modelUrl.forEach((url) => {
+      new GLTFLoader(this.loadingManager).load(
+        url,
+        (gltf) => {
+          this.scene.add(gltf.scene)
+          this.scene.traverse((obj) => {
+            if (obj.type === 'Mesh') {
+              obj.layers.enable(0)
+              obj.receiveShadow = true
+              obj.castShadow = true
+              if (obj.name === 'ground') {
+                obj.castShadow = false
+                this.worldOctree.fromGraphNode(obj)
+              }
+              if (obj.name === 'water') {
+                obj.receiveShadow = false
+              }
             }
-            if (obj.name === 'water') {
-              obj.receiveShadow = false
-            }
-          }
-        })
-        this.loadingManager.onLoad = () => {
-          console.log('模型加载完毕')
-
+          })
+          this.loadingManager.onLoad = onLoaded
+        },
+        (xhr) => {
+          onDownloadProgress((xhr.loaded / xhr.total) * 100)
+          // console.log(xhr);
+          // console.log('加载完成的百分比'+()+'%')
         }
-      })
+      )
     })
     return
   }

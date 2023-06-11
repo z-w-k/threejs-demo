@@ -2,7 +2,12 @@ import { flyToPosition } from '../../store/mainStore'
 import { PropType } from 'vue'
 import './menuButton.scss'
 export interface TagList {
-  textList: { text: string; pathName: string; flyToPosition?: flyToPosition }[]
+  textList: {
+    text: string
+    pathName: string
+    query?: { origin: 'menu' | 'pause' }
+    flyToPosition?: flyToPosition
+  }[]
   class: string
 }
 
@@ -17,6 +22,10 @@ export default defineComponent({
       if (button.text === '仓库地址')
         return window.open(button.pathName, '_blank')
       router.push({ name: button.pathName })
+      router.beforeEach((to, from, next) => {
+        to.query.origin = from.name as string
+        next()
+      })
     }
 
     const buttonList = props.tagList!.textList.map((button) => {

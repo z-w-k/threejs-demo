@@ -12,7 +12,7 @@ export default [
     {
         path:path,
         name:'menu',
-        redirect:'/menu/mainMenu',
+        redirect:`${path}/mainMenu`,
         children:createChildrenRoutes(path,menuRoutes)
     }
 ]

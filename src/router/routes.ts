@@ -8,7 +8,7 @@ const moduleRoutes = import.meta.glob('../module/*/*.router.ts', {
 const routes:RouteRecordRaw[] = [
   {
     path: '/',
-    redirect:'/menu',
+    redirect:'/loading',
     children: createChildrenRoutes('',moduleRoutes)
   }
 ]

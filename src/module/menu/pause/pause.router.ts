@@ -1,15 +1,11 @@
-import setting from '../setting/setting'
 import pause from './pause'
 
-export default [
+
+ const route = [
   {
     path: '/pause',
     name: 'pause',
     component: pause
-  },
-  {
-    path: '/pause/setting',
-    name: 'pauseSetting',
-    component: setting
   }
 ]
+export default route

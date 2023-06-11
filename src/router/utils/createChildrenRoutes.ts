@@ -8,7 +8,7 @@ export const createChildrenRoutes = <T>(
 
   Object.keys(childrenRoutes).forEach((k: string) => {
     const route = childrenRoutes[k as string] as RouteRecordRaw[]
-    route[0].path = `${root}${route[0].path}`
+    route.forEach((r) => (r.path = `${root}${r.path}`))
     C_R = C_R.concat(route)
   })
   return C_R

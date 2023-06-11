@@ -23,6 +23,7 @@ export class FpsControls {
     public scene: THREE.Scene,
     public camera: THREE.PerspectiveCamera,
     public gui: GUI,
+    public commonGUI: GUI,
     public worldOctree: Octree
   ) {
     this.initFps()
@@ -32,9 +33,11 @@ export class FpsControls {
     helper.visible = false
     this.scene.add(helper)
 
-    this.gui.add({ debug: false }, 'debug').onChange(function (value: any) {
-      helper.visible = value
-    })
+    this.commonGUI
+      .add({ OctreeHelper: false }, 'OctreeHelper')
+      .onChange(function (value: any) {
+        helper.visible = value
+      })
     document.addEventListener('keydown', (event) => {
       this.keyStates[event.code] = true
     })
