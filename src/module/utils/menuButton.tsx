@@ -1,6 +1,6 @@
 import { flyToPosition } from '../../store/mainStore'
 import { PropType } from 'vue'
-import './menuButton.scss'
+import style from './menuButton.module.scss'
 export interface TagList {
   textList: {
     text: string
@@ -35,9 +35,9 @@ export default defineComponent({
           onClick={() => clickBl(button)}
           class={
             [
-              'dynamic',
+              style['dynamic'],
               props.tagList.class && props.tagList.class,
-              ' !rounded-md text-white hover:text-black  bg-transparent  h-[100%]'
+              '!rounded-md text-white hover:text-black  bg-transparent  h-[100%]'
             ]
             // typeof props.buttonClass === 'string' && props.buttonClass
           }>
@@ -46,7 +46,9 @@ export default defineComponent({
       )
     })
     return () => (
-      <div class={[' flex justify-around items-center']}> {buttonList}</div>
+      <div class={[' flex justify-around items-center border-2']}>
+        {buttonList}
+      </div>
     )
   }
 })
