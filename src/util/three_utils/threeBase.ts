@@ -15,7 +15,8 @@ export class ThreeBase {
   camera!: THREE.PerspectiveCamera
   renderer!: THREE.WebGLRenderer
   controls!: OrbitControls
-  light!: THREE.Light
+  AmbLight!: THREE.AmbientLight
+  dirLight!: THREE.DirectionalLight
   stats = new Stats()
   gui = new GUI({ width: 200 })
   commonGUI!: GUI
@@ -36,12 +37,21 @@ export class ThreeBase {
     this.camera = this.initCamera()
     this.renderer = this.initRenderer()
     this.controls = this.initControls()
-    this.light = this.initLight()
+    this.AmbLight = this.initAmb()
+    this.dirLight = this.initDir()
     this.camera.rotation.order = 'YXZ'
-    this.scene.background = new THREE.Color(0x88ccee)
-    this.scene.fog = new THREE.Fog(new THREE.Color('rgb(100,100,150)'), 0, 1000)
+    this.scene.background = null
+    this.scene.fog = new THREE.Fog(
+      new THREE.Color('rgb(100,100,150)'),
+      0,
+      10000
+    )
+    console.log(this.scene.fog)
+    this.commonGUI.add(this.scene.fog, 'near', 0, 1000, 1).name('Fog_near')
+    this.commonGUI.add(this.scene.fog, 'far', 0, 10000, 1).name('Fog_far')
     this.scene.add(this.camera)
-    this.scene.add(this.light)
+    this.scene.add(this.AmbLight)
+    this.scene.add(this.dirLight)
     this.initStats()
     this.initAxes()
   }
@@ -105,9 +115,30 @@ export class ThreeBase {
     // controls.maxDistance = 80
     return controls
   }
-  initLight = () => {
+  initDir() {
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 2)
+    directionalLight.castShadow = true
+    directionalLight.shadow.mapSize.width = 1024 // default
+    directionalLight.shadow.mapSize.height = 1024 // default
+
+    // 设置三维场景计算阴影的范围
+    directionalLight.shadow.camera.left = -50
+    directionalLight.shadow.camera.right = 50
+    directionalLight.shadow.camera.top = 200
+    directionalLight.shadow.camera.bottom = -200
+    directionalLight.shadow.camera.near = 0.5
+    directionalLight.shadow.camera.far = 2000
+
+    directionalLight.position.setY(1000)
+
+    return directionalLight
+  }
+  initAmb = () => {
     // 环境光
     const AmbientLight = new THREE.AmbientLight('#fff', 0.2)
+    this.commonGUI
+      .add(AmbientLight, 'intensity', 0, 3, 0.1)
+      .name('Ambient_Light')
     return AmbientLight
   }
   clearScene = (scene: THREE.Object3D) => {

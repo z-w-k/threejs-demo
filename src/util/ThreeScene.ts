@@ -4,6 +4,7 @@ import { ThreeBase } from './three_utils/threeBase'
 import { InitSkyModule } from './three_utils/sky/skyModule'
 import * as THREE from 'three'
 import { InitWaterModule } from './three_utils/water/waterModule'
+import { InitGodRayModule } from './three_utils/god_ray/godRay'
 
 export interface CameraConfig {
   fov: number
@@ -12,9 +13,10 @@ export interface CameraConfig {
 }
 class ThreeScene extends ThreeBase {
   bloomModule: InitBloomModule
-  skyModule: InitSkyModule
-  waterModule: InitWaterModule
+  // skyModule: InitSkyModule
+  // waterModule: InitWaterModule
   fpsControls: FpsControls
+  godRayModule: InitGodRayModule
   fpsStatus = false
   controlsStatus = true
 
@@ -42,8 +44,9 @@ class ThreeScene extends ThreeBase {
       commonGUI,
       worldOctree
     )
-    this.skyModule = new InitSkyModule(scene, camera, renderer, stats, gui)
-    this.waterModule = new InitWaterModule(this.skyModule, scene, renderer, gui)
+    // this.skyModule = new InitSkyModule(scene, camera, renderer, stats, gui)
+    // this.waterModule = new InitWaterModule(this.skyModule, scene, renderer, gui)
+    this.godRayModule = new InitGodRayModule(scene, camera, renderer, this.gui)
 
     camera.position.set(5, 2, 0)
     controls.target.set(0, 0, 0)
@@ -58,6 +61,7 @@ class ThreeScene extends ThreeBase {
       this.domElement.clientWidth,
       this.domElement.clientHeight
     )
+    this.godRayModule.onWindowResize()
   }
   enterFps = () => {
     this.controls.enabled = false
@@ -85,12 +89,13 @@ class ThreeScene extends ThreeBase {
   }
   animate = () => {
     this.stats.update()
+    this.godRayModule.animate()
     this.fpsStatus && this.fpsControls.animate()
     this.controlsStatus &&
       (this.controls.update(),
       this.axesHelper.position.copy(this.controls.target))
-    this.waterModule.animate()
-    this.bloomModule.animate()
+    // this.waterModule.animate()
+    // this.bloomModule.animate()
   }
 }
 

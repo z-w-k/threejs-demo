@@ -38,9 +38,7 @@ export default defineComponent({
   },
   render() {
     return (
-      <div
-        ref='setting'
-        class={['menu_container', `flex flex-col  border-2 border-red-500`]}>
+      <div ref='setting' class={['menu_container', `flex flex-col`]}>
         <MenuButton class={['h-[10%] w-[100%]']} tagList={this.tagListSet[0]} />
         <RouterView
           class={[

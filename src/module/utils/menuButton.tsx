@@ -46,9 +46,7 @@ export default defineComponent({
       )
     })
     return () => (
-      <div class={[' flex justify-around items-center border-2']}>
-        {buttonList}
-      </div>
+      <div class={[' flex justify-around items-center']}>{buttonList}</div>
     )
   }
 })

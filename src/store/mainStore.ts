@@ -74,11 +74,10 @@ export const MainStore = defineStore('mainStore', () => {
     const modelUrl = await API.getModel()
     threeScene.loadModel(modelUrl.data, onDownloadProgress, () => {
       console.log('模型加载完毕')
-      router.replace({name:'menu'})
-      console.log(loadingProgress.value);
-      
+      router.replace({ name: 'menu' })
+      console.log(loadingProgress.value)
     })
-    return 
+    return
   }
 
   const lockMouse = () => {
