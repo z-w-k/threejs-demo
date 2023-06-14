@@ -14,7 +14,7 @@ export class InitSkyModule {
     elevation: 63.9,
     azimuth: 180,
     // exposure: 0.4269
-    exposure: 1
+    exposure: 0.5
   }
   constructor(
     public scene: THREE.Scene,
@@ -25,31 +25,11 @@ export class InitSkyModule {
   ) {
     this.initSky()
   }
-  initDir() {
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 2)
-    directionalLight.castShadow = true
-    directionalLight.shadow.mapSize.width = 1024 // default
-    directionalLight.shadow.mapSize.height = 1024 // default
-
-    // 设置三维场景计算阴影的范围
-    directionalLight.shadow.camera.left = -50
-    directionalLight.shadow.camera.right = 50
-    directionalLight.shadow.camera.top = 200
-    directionalLight.shadow.camera.bottom = -200
-    directionalLight.shadow.camera.near = 0.5
-    directionalLight.shadow.camera.far = 1200
-
-    directionalLight.position.setY(1000)
-
-    return directionalLight
-  }
   initSky() {
     // Add Sky
     const sky = this.sky
     // sky.scale.setScalar(4500)
     sky.scale.setScalar(450000)
-    const dir = this.initDir()
-    this.scene.add(dir)
 
     this.scene.add(sky)
 

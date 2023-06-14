@@ -30,7 +30,7 @@ export class InitWaterModule {
       distortionScale: 3.7,
       fog: this.scene.fog !== undefined
     })
-
+    this.water.layers.enable(1)
     this.water.rotation.x = -Math.PI / 2
     this.pmremGenerator = new THREE.PMREMGenerator(this.renderer)
     this.water.position.setY(-9.3)

@@ -11,7 +11,7 @@ export class InitGodRayModule {
   clipPosition = new THREE.Vector4()
   screenSpacePosition = new THREE.Vector3()
   orbitRadius = 200
-  bgColor = 0x000511
+  bgColor = 0x005511
   sunColor = 0xffee00
   godrayRenderTargetResolutionMultiplier = 1.0 / 4.0
   materialDepth = new THREE.MeshDepthMaterial()
@@ -130,28 +130,9 @@ export class InitGodRayModule {
     this.init()
   }
 
-  initDir() {
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 2)
-    directionalLight.castShadow = true
-    directionalLight.shadow.mapSize.width = 1024 // default
-    directionalLight.shadow.mapSize.height = 1024 // default
-
-    // 设置三维场景计算阴影的范围
-    directionalLight.shadow.camera.left = -50
-    directionalLight.shadow.camera.right = 50
-    directionalLight.shadow.camera.top = 200
-    directionalLight.shadow.camera.bottom = -200
-    directionalLight.shadow.camera.near = 0.5
-    directionalLight.shadow.camera.far = 2000
-
-    directionalLight.position.copy(this.sunPosition)
-
-    return directionalLight
-  }
   init = () => {
     const renderer = this.renderer
-    const dir = this.initDir()
-    this.scene.add(dir)
+
     renderer.setClearColor(0xffffff)
     renderer.setPixelRatio(window.devicePixelRatio)
     renderer.autoClear = false
@@ -175,7 +156,7 @@ export class InitGodRayModule {
     postprocessing.godraysFakeSunUniforms.bgColor.value.setHex(this.bgColor)
     postprocessing.godraysFakeSunUniforms.sunColor.value.setHex(this.sunColor)
 
-    postprocessing.godrayCombineUniforms.fGodRayIntensity.value = 0.18
+    postprocessing.godrayCombineUniforms.fGodRayIntensity.value = 0.1
 
     postprocessing.quad.position.z = -9900
     postprocessing.scene.add(postprocessing.quad)
