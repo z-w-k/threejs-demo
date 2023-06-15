@@ -1,12 +1,10 @@
 <template>
-  <div ref="container" class="w-[100vw] h-[100vh] relative">
-    <div class="fixed top-0 left-0 h-[100vh] w-[100vw] text-white">
-      <RouterView v-slot="{ Component }">
-        <transition :name="route.fullPath.includes('loading') ? 'loadingMask' : 'fade'" mode="out-in">
-          <component :is="Component"></component>
-        </transition>
-      </RouterView>
-    </div>
+  <div ref="container" class="fixed top-0 left-0 h-[100vh] w-[100vw] text-white">
+    <RouterView v-slot="{ Component }">
+      <transition :name="route.fullPath.includes('loading') ? 'loadingMask' : 'fade'" mode="out-in">
+        <component :is="Component"></component>
+      </transition>
+    </RouterView>
   </div>
 </template>
 <script setup lang="ts">

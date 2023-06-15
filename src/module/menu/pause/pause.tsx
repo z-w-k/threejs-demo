@@ -10,7 +10,7 @@ export default defineComponent({
       {
         textList: [
           { text: '帮助', pathName: 'help' },
-          { text: '设置', pathName: 'setting', query: { origin: 'pause' } },
+          { text: '设置', pathName: 'setting' },
           { text: '返回主菜单', pathName: 'menu' }
         ],
         class: 'w-[100%] h-[20%] hover:text-black  !text-2xl !font-black'
@@ -22,7 +22,7 @@ export default defineComponent({
       if (key.key === 'Escape') {
         const lockIntercal = Date.now() - interval
         if (lockIntercal < 1200) return handleKeyup()
-        router.push({ name: 'playing' })
+        router.push({ name: route.meta.fixedRoute as string })
       }
     }
 
@@ -30,6 +30,8 @@ export default defineComponent({
       window.addEventListener('keyup', continuePlay, { once: true })
     }
     onMounted(() => {
+      console.log(route)
+
       interval = Date.now()
       handleKeyup()
     })

@@ -23,6 +23,9 @@ export default defineComponent({
         return window.open(button.pathName, '_blank')
       router.push({ name: button.pathName })
       router.beforeEach((to, from, next) => {
+        if (from.meta.fixedRoute) {
+          to.meta.fixedRoute = from.meta.fixedRoute
+        }
         to.query.origin = from.name as string
         next()
       })

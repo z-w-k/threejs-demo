@@ -71,12 +71,12 @@ export const MainStore = defineStore('mainStore', () => {
     utilSet.value.threeScene = threeScene
     const resize = _.debounce(threeScene.onWindowResize, 100)
     window.addEventListener('resize', resize)
-    const modelUrl = await API.getModel()
-    threeScene.loadModel(modelUrl.data, onDownloadProgress, () => {
-      console.log('模型加载完毕')
-      router.replace({ name: 'menu' })
-      console.log(loadingProgress.value)
-    })
+    // const modelUrl = await API.getModel()
+    // threeScene.loadModel(modelUrl.data, onDownloadProgress, () => {
+    //   console.log('模型加载完毕')
+    router.replace({ name: 'menu' })
+    loadingProgress.value = 100
+    // })
     return
   }
 
@@ -87,9 +87,18 @@ export const MainStore = defineStore('mainStore', () => {
         threeScene.enterFps()
       } else {
         console.log('取消锁定')
-        threeScene.enterOrbit()
-        router.push({ name: 'pause' })
+        pause()
       }
+    })
+  }
+
+  const pause = () => {
+    router.push({ name: 'pause' })
+    router.beforeEach((to, from, next) => {
+      to.meta.fixedRoute = from.name as string
+      console.log(to)
+
+      next()
     })
   }
 
@@ -128,7 +137,8 @@ export const MainStore = defineStore('mainStore', () => {
     animate,
     requestPointerLock,
     flyTo,
-    onDownloadProgress
+    onDownloadProgress,
+    pause
   }
 })
 
