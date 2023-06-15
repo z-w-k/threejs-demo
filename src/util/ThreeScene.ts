@@ -8,6 +8,7 @@ import { InitGodRayModule } from './three_utils/god_ray/godRay'
 import { InitOutlineModule } from './three_utils/post/outline/outline'
 
 import lmJPG from '../assets/img/lm.jpg'
+import rPNG from '../assets/img/R.png'
 
 export interface CameraConfig {
   fov: number
@@ -103,15 +104,15 @@ class ThreeScene extends ThreeBase {
     }
     {
       const textureLoader = new THREE.TextureLoader()
-      const lineTexture = textureLoader.load(lmJPG)
-      lineTexture.center.set(0.5, 0.5)
-      lineTexture.offset.y = 0.5
-      lineTexture.offset.x = -0.5
+      const lineTexture = textureLoader.load(rPNG)
+      // lineTexture.center.set(0.5, 0.5)
+      // lineTexture.offset.y = 0.5
+      // lineTexture.offset.x = -0.5
       // lineTexture.rotation = Math.PI / 6
-      lineTexture.repeat.set(2, 2)
+      // lineTexture.repeat.set(2, 2)
 
-      lineTexture.wrapS = THREE.MirroredRepeatWrapping
-      lineTexture.wrapT = THREE.RepeatWrapping
+      // lineTexture.wrapS = THREE.MirroredRepeatWrapping
+      // lineTexture.wrapT = THREE.RepeatWrapping
       const cubeGeometry = new THREE.BoxGeometry(1, 1, 1)
       const Material = new THREE.MeshBasicMaterial({
         color: '#fff',
