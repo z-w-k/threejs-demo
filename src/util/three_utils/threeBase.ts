@@ -134,7 +134,6 @@ export class ThreeBase {
       .add(renderer, 'toneMappingExposure', 0, 10, 0.1)
       .name('rendererToneMappingExposure')
     renderer.shadowMap.enabled = true
-    renderer.shadowMap.type = THREE.PCFSoftShadowMap
     renderer.domElement.className = 'threeScene'
     domElement.appendChild(renderer.domElement)
     return renderer
@@ -156,10 +155,10 @@ export class ThreeBase {
   }
 
   initDir() {
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 1)
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 6.4)
     directionalLight.castShadow = true
-    directionalLight.shadow.mapSize.width = 2048 // default
-    directionalLight.shadow.mapSize.height = 2048 // default
+    directionalLight.shadow.mapSize.width = 4096 // default
+    directionalLight.shadow.mapSize.height = 4096 // default
 
     // 设置三维场景计算阴影的范围
     directionalLight.shadow.camera.left = -200
@@ -168,7 +167,8 @@ export class ThreeBase {
     directionalLight.shadow.camera.bottom = -200
     directionalLight.shadow.camera.near = 0.5
     directionalLight.shadow.camera.far = 500
-
+    directionalLight.shadow.radius = 0.5
+    directionalLight.shadow.bias = -0.00005
     directionalLight.position.setY(10)
 
     const dirLightFolder = this.commonGUI.addFolder('dirLight')
@@ -228,12 +228,13 @@ export class ThreeBase {
       new GLTFLoader(this.loadingManager).load(
         modelUrl,
         (gltf) => {
-          this.scene.add(gltf.scene)
-          this.scene.traverse((obj: THREE.Object3D | THREE.Mesh) => {
+          gltf.scene.traverse((obj: THREE.Object3D | THREE.Mesh) => {
             if (obj.type === 'Mesh') {
               obj.layers.enable(0)
-              obj.receiveShadow = true
               obj.castShadow = true
+              obj.receiveShadow = true
+              ;(<any>obj).material.shadowSide = THREE.BackSide
+              ;(<any>obj).material.side = 0
               if (obj.name === 'ground') {
                 this.worldOctree.fromGraphNode(obj)
                 obj.castShadow = false
@@ -243,6 +244,8 @@ export class ThreeBase {
               }
             }
           })
+          this.scene.add(gltf.scene)
+
           this.loadingManager.onLoad = () => {
             resolve()
           }

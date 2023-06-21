@@ -61,6 +61,7 @@ export class InitWaterModule {
   }
 
   animate = () => {
+    this.updateWater()
     this.water.material.uniforms['time'].value += 1.0 / 60.0
   }
 }

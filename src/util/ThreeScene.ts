@@ -38,7 +38,8 @@ class ThreeScene extends ThreeBase {
       gui,
       worldOctree,
       controls,
-      commonGUI
+      commonGUI,
+      dirLight
     } = this
     this.bloomModule = new InitBloomModule(domElement, scene, camera, renderer)
     this.fpsControls = new FpsControls(
@@ -49,12 +50,18 @@ class ThreeScene extends ThreeBase {
       commonGUI,
       worldOctree
     )
-    this.skyModule = new InitSkyModule(scene, camera, renderer, stats, gui)
+    this.skyModule = new InitSkyModule(
+      scene,
+      camera,
+      renderer,
+      stats,
+      gui,
+      dirLight
+    )
     this.waterModule = new InitWaterModule(this.skyModule, scene, renderer, gui)
     // this.godRayModule = new InitGodRayModule(scene, camera, renderer, this.gui)
     // this.outlineModule = new InitOutlineModule(scene, camera, renderer, gui)
     // this.initTest()
-    this.dirLight.position.copy(this.skyModule.sun).multiplyScalar(100)
 
     camera.position.set(5, 2, 0)
     controls.target.set(0, 0, 0)
@@ -164,6 +171,7 @@ class ThreeScene extends ThreeBase {
     this.stats.update()
     // this.godRayModule.animate()
     // this.outlineModule.animate()
+    this.skyModule.animate()
     this.fpsStatus && this.fpsControls.animate()
     this.controlsStatus &&
       (this.controls.update(),
