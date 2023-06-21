@@ -9,7 +9,7 @@ export default defineComponent({
     const tagListSet: TagList[] = [
       {
         textList: [
-          { text: '帮助', pathName: 'help' },
+          // { text: '帮助', pathName: 'help' },
           { text: '设置', pathName: 'setting' },
           { text: '返回主菜单', pathName: 'menu' }
         ],
@@ -45,7 +45,7 @@ export default defineComponent({
       <div class={['menu_container']}>
         <MenuButton
           class={[
-            'absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] flex-col h-[40%] w-[15%]'
+            'absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] flex-col h-[30%] w-[15%]'
           ]}
           tagList={this.tagListSet[0]}
         />

@@ -6,9 +6,13 @@ export default defineComponent({
       {
         textList: [
           { text: '开始', pathName: 'playing' },
-          { text: '帮助', pathName: 'help' },
+          // { text: '帮助', pathName: 'help' },
           { text: '设置', pathName: 'setting' },
-          { text: '调试模式', pathName: 'debugModel' }
+          { text: '调试模式', pathName: 'debugModel' },
+          {
+            text: 'GitHub',
+            pathName: 'https://github.com/1099571219/threejs-demo'
+          }
         ],
         class: 'w-[100%] h-[20%] !text-2xl font-black'
       }

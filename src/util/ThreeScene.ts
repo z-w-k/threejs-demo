@@ -53,7 +53,8 @@ class ThreeScene extends ThreeBase {
     this.waterModule = new InitWaterModule(this.skyModule, scene, renderer, gui)
     // this.godRayModule = new InitGodRayModule(scene, camera, renderer, this.gui)
     // this.outlineModule = new InitOutlineModule(scene, camera, renderer, gui)
-    this.initTest()
+    // this.initTest()
+    this.dirLight.position.copy(this.skyModule.sun).multiplyScalar(100)
 
     camera.position.set(5, 2, 0)
     controls.target.set(0, 0, 0)
@@ -74,7 +75,7 @@ class ThreeScene extends ThreeBase {
       //   side: THREE.DoubleSide
       // })
       // const testGeo = new THREE.Mesh(geo, mate)
-      // this.scene.add(testGeo)
+      // this.dirLight.add(testGeo)
       // this.controls.target.copy(testGeo.position)
     }
     {
@@ -103,25 +104,23 @@ class ThreeScene extends ThreeBase {
       // this.scene.add(group)
     }
     {
-      const textureLoader = new THREE.TextureLoader()
-      const lineTexture = textureLoader.load(rPNG)
-      // lineTexture.center.set(0.5, 0.5)
-      // lineTexture.offset.y = 0.5
-      // lineTexture.offset.x = -0.5
-      // lineTexture.rotation = Math.PI / 6
-      // lineTexture.repeat.set(2, 2)
-
-      // lineTexture.wrapS = THREE.MirroredRepeatWrapping
-      // lineTexture.wrapT = THREE.RepeatWrapping
-      const cubeGeometry = new THREE.BoxGeometry(1, 1, 1)
-      const Material = new THREE.MeshBasicMaterial({
-        color: '#fff',
-        map: lineTexture
-      })
-      const cube = new THREE.Mesh(cubeGeometry, Material)
-      console.log(lineTexture)
-
-      this.scene.add(cube)
+      // const textureLoader = new THREE.TextureLoader()
+      // const lineTexture = textureLoader.load(rPNG)
+      // // lineTexture.center.set(0.5, 0.5)
+      // // lineTexture.offset.y = 0.5
+      // // lineTexture.offset.x = -0.5
+      // // lineTexture.rotation = Math.PI / 6
+      // // lineTexture.repeat.set(2, 2)
+      // // lineTexture.wrapS = THREE.MirroredRepeatWrapping
+      // // lineTexture.wrapT = THREE.RepeatWrapping
+      // const cubeGeometry = new THREE.BoxGeometry(1, 1, 1)
+      // const Material = new THREE.MeshBasicMaterial({
+      //   color: '#fff',
+      //   map: lineTexture
+      // })
+      // const cube = new THREE.Mesh(cubeGeometry, Material)
+      // console.log(lineTexture)
+      // this.scene.add(cube)
     }
   }
 

@@ -19,7 +19,7 @@ export default defineComponent({
   setup(props, { emit }) {
     const router = useRouter()
     const clickBl = (button: TagList['textList'][0]) => {
-      if (button.text === '仓库地址')
+      if (button.text === 'GitHub')
         return window.open(button.pathName, '_blank')
       router.push({ name: button.pathName })
       router.beforeEach((to, from, next) => {

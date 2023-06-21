@@ -5,7 +5,7 @@
   outline: none;
   border: none;
   overflow: hidden;
-  transition: all 0.4s ease-in-out;
+  transition: all 0.5s ease-in-out;
   &::before {
     content: '';
     z-index: -1;
@@ -24,7 +24,7 @@
     cursor: pointer;
     color: #161616;
     &::before {
-      transform: translate3d(50%, 50%, 0) scale3d(15, 15, 15);
+      transform: translate3d(50%, 50%, 0) scale3d(5, 5, 5);
     }
   }
 }

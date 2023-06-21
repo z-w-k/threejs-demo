@@ -50,7 +50,10 @@ export const MainStore = defineStore('mainStore', () => {
   const isMask = ref(false)
   const utilSet: Ref<UtilSet> = ref({})
   const router = useRouter()
-  const loadingProgress = ref(0)
+  const loadingProgress = ref({
+    progress: 0,
+    name: ''
+  })
   const scenePosition: Ref<ScenePosition> = ref({
     heatMap: new FlyToPosition([0, -2200, 0], [0, -2000, 20], [1, 1]),
     // homePosition: new FlyToPosition([1, 0, 0], [-2000, -2000, -2000], [2, 2]),
@@ -58,7 +61,7 @@ export const MainStore = defineStore('mainStore', () => {
     points: new FlyToPosition([0, -1000, 0], [0, -1000, 20], [1, 1])
   })
 
-  const init = async (homeContainer: HTMLElement) => {
+  const init = (homeContainer: HTMLElement) => {
     threeScene = new ThreeScene(homeContainer, {
       fov: 60,
       near: 0.1,
@@ -71,12 +74,28 @@ export const MainStore = defineStore('mainStore', () => {
     utilSet.value.threeScene = threeScene
     const resize = _.debounce(threeScene.onWindowResize, 100)
     window.addEventListener('resize', resize)
-    // const modelUrl = await API.getModel()
-    // threeScene.loadModel(modelUrl.data, onDownloadProgress, () => {
-    //   console.log('模型加载完毕')
-    router.replace({ name: 'menu' })
-    loadingProgress.value = 100
-    // })
+    loadModel()
+  }
+
+  const loadModel = async () => {
+    const modelUrl = await API.getModel()
+    await new Promise<void>((resolve, reject) => {
+      modelUrl.data.forEach(async (url: string, urlInd: number) => {
+        const modelName = url.substring(url.lastIndexOf('/') + 1)
+        loadingProgress.value.name = modelName
+        await threeScene.loadModel(url, onDownloadProgress).then(() => {
+          console.log(`${modelName} 片段加载完毕`)
+          loadingProgress.value.progress = 100
+          return
+        })
+        if (urlInd === modelUrl.data.length - 1) {
+          console.log('全部模型加载完毕')
+          router.replace({ name: 'menu' })
+          loadingProgress.value.progress = 100
+          resolve()
+        }
+      })
+    })
     return
   }
 
@@ -103,7 +122,7 @@ export const MainStore = defineStore('mainStore', () => {
   }
 
   const onDownloadProgress: OnDownloadProgress = (e) => {
-    loadingProgress.value = Number(e.toFixed(2))
+    loadingProgress.value.progress = Number(e.toFixed(2))
   }
 
   const flyTo = (positionName: keyof ScenePosition) => {
@@ -123,7 +142,7 @@ export const MainStore = defineStore('mainStore', () => {
   let animateId
   const animate = () => {
     animateId = requestAnimationFrame(animate)
-    if (loadingProgress.value !== 100) return
+    if (loadingProgress.value.progress !== 100) return
     // tweenJS.tween.update()
     // homePoints.update()
     threeScene.animate()

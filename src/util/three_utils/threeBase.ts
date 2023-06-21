@@ -8,6 +8,7 @@ import Stats from 'three/examples/jsm/libs/stats.module'
 import { GUI } from 'three/examples/jsm/libs/lil-gui.module.min'
 import { Octree } from 'three/examples/jsm/math/Octree'
 import { pinia } from '../../main'
+import { reject } from 'lodash'
 
 let mainStore: ReturnType<typeof MainStore>
 export class ThreeBase {
@@ -48,7 +49,6 @@ export class ThreeBase {
       0,
       10000
     )
-    console.log(this.scene.fog)
     this.commonGUI.add(this.scene.fog, 'near', 0, 1000, 1).name('Fog_near')
     this.commonGUI.add(this.scene.fog, 'far', 0, 10000, 1).name('Fog_far')
     this.scene.add(this.camera)
@@ -60,16 +60,18 @@ export class ThreeBase {
     this.hemiLight = this.initHemiLight()
     this.AmbLight = this.initAmb()
     this.dirLight = this.initDir()
+    const dirLightHelper = new THREE.DirectionalLightHelper(this.dirLight)
+    this.commonGUI.openAnimated(true)
+    this.commonGUI.add(dirLightHelper, 'visible').name('dirLightHelper')
 
     const lightGroup = new THREE.Group()
     lightGroup.add(this.hemiLight)
     lightGroup.add(this.AmbLight)
     lightGroup.add(this.dirLight)
+    lightGroup.add(dirLightHelper)
     lightGroup.name = 'lightGroup'
-    this.scene.add(lightGroup)
 
-    const hemiLightHelper = new THREE.HemisphereLightHelper(this.hemiLight, 10)
-    this.scene.add(hemiLightHelper)
+    this.scene.add(lightGroup)
   }
 
   initHemiLight = () => {
@@ -128,6 +130,9 @@ export class ThreeBase {
     renderer.setSize(domElement.clientWidth, domElement.clientHeight)
     renderer.toneMapping = THREE.ACESFilmicToneMapping
     renderer.toneMappingExposure = 0.5
+    this.commonGUI
+      .add(renderer, 'toneMappingExposure', 0, 10, 0.1)
+      .name('rendererToneMappingExposure')
     renderer.shadowMap.enabled = true
     renderer.shadowMap.type = THREE.PCFSoftShadowMap
     renderer.domElement.className = 'threeScene'
@@ -147,7 +152,6 @@ export class ThreeBase {
   initMoveLight = () => {
     const pointLight = new THREE.PointLight(0xffffff, 10, 3, 3)
     pointLight.castShadow = true
-    console.log(pointLight)
     return pointLight
   }
 
@@ -158,17 +162,37 @@ export class ThreeBase {
     directionalLight.shadow.mapSize.height = 2048 // default
 
     // 设置三维场景计算阴影的范围
-    directionalLight.shadow.camera.left = -50
-    directionalLight.shadow.camera.right = 50
+    directionalLight.shadow.camera.left = -200
+    directionalLight.shadow.camera.right = 200
     directionalLight.shadow.camera.top = 200
     directionalLight.shadow.camera.bottom = -200
     directionalLight.shadow.camera.near = 0.5
-    directionalLight.shadow.camera.far = 2000
+    directionalLight.shadow.camera.far = 500
 
-    directionalLight.position.setY(1000)
-    this.commonGUI
+    directionalLight.position.setY(10)
+
+    const dirLightFolder = this.commonGUI.addFolder('dirLight')
+    dirLightFolder
       .add(directionalLight, 'intensity', 0, 10, 0.1)
       .name('Directional_Light')
+    dirLightFolder
+      .add(directionalLight.position, 'x', -100, 100, 1)
+      .name('dirX')
+    dirLightFolder
+      .add(directionalLight.position, 'y', -100, 100, 1)
+      .name('dirY')
+    dirLightFolder
+      .add(directionalLight.position, 'z', -100, 100, 1)
+      .name('dirZ')
+    dirLightFolder
+      .add(directionalLight.target.position, 'x', -100, 100, 1)
+      .name('dirTarX')
+    dirLightFolder
+      .add(directionalLight.target.position, 'y', -100, 100, 1)
+      .name('dirTarY')
+    dirLightFolder
+      .add(directionalLight.target.position, 'z', -100, 100, 1)
+      .name('dirTarZ')
     return directionalLight
   }
   initAmb = () => {
@@ -197,17 +221,14 @@ export class ThreeBase {
     console.log('clearScene')
   }
   loadModel = async (
-    modelUrl: Array<string>,
-    onDownloadProgress: OnDownloadProgress,
-    onLoaded: () => void
+    modelUrl: string,
+    onDownloadProgress: OnDownloadProgress
   ) => {
-    modelUrl.forEach((url) => {
+    return new Promise<void>((resolve, reject) => {
       new GLTFLoader(this.loadingManager).load(
-        url,
+        modelUrl,
         (gltf) => {
           this.scene.add(gltf.scene)
-          console.log(this.scene)
-
           this.scene.traverse((obj: THREE.Object3D | THREE.Mesh) => {
             if (obj.type === 'Mesh') {
               obj.layers.enable(0)
@@ -217,13 +238,14 @@ export class ThreeBase {
                 this.worldOctree.fromGraphNode(obj)
                 obj.castShadow = false
               }
-
               if (obj.name === 'water') {
                 obj.receiveShadow = false
               }
             }
           })
-          this.loadingManager.onLoad = onLoaded
+          this.loadingManager.onLoad = () => {
+            resolve()
+          }
         },
         (xhr) => {
           onDownloadProgress((xhr.loaded / xhr.total) * 100)
@@ -232,6 +254,5 @@ export class ThreeBase {
         }
       )
     })
-    return
   }
 }

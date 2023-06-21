@@ -16,7 +16,7 @@ export class InitWaterModule {
     this.initWater()
   }
   initWater = () => {
-    const waterGeometry = new THREE.PlaneGeometry(100, 100)
+    const waterGeometry = new THREE.PlaneGeometry(110, 110)
 
     this.water = new Water(waterGeometry, {
       textureWidth: 1024,
