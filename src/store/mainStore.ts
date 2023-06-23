@@ -1,10 +1,11 @@
 import ThreeScene from '../util/ThreeScene'
 import HomePoints from '../util/homePoints'
 import TweenJS from '../util/tween'
-import { Vector3 } from 'three'
+import { LoadingManager, Vector3 } from 'three'
 import TemperatureField from '../util/temperature'
 import _ from 'lodash'
 import { API } from '../api/api'
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 
 interface UtilSet {
   threeScene?: ThreeScene
@@ -47,13 +48,14 @@ export type OnDownloadProgress = (e: any) => void
 
 export const MainStore = defineStore('mainStore', () => {
   let threeScene!: ThreeScene
-  const isMask = ref(false)
+  const isLoading = ref(true)
   const utilSet: Ref<UtilSet> = ref({})
   const router = useRouter()
   const loadingProgress = ref({
     progress: 0,
-    name: ''
+    name: '连接中...'
   })
+
   const scenePosition: Ref<ScenePosition> = ref({
     heatMap: new FlyToPosition([0, -2200, 0], [0, -2000, 20], [1, 1]),
     // homePosition: new FlyToPosition([1, 0, 0], [-2000, -2000, -2000], [2, 2]),
@@ -78,24 +80,35 @@ export const MainStore = defineStore('mainStore', () => {
   }
 
   const loadModel = async () => {
-    const modelUrl = await API.getModel()
-    await new Promise<void>((resolve, reject) => {
-      modelUrl.data.forEach(async (url: string, urlInd: number) => {
+    const GLTFOnProgress = (url: string, loaded: number, total: number) => {
+      const progress = (loaded / total) * 100
+      if (url.startsWith('/model')) {
         const modelName = url.substring(url.lastIndexOf('/') + 1)
         loadingProgress.value.name = modelName
-        await threeScene.loadModel(url, onDownloadProgress).then(() => {
-          console.log(`${modelName} 片段加载完毕`)
-          loadingProgress.value.progress = 100
-          return
-        })
-        if (urlInd === modelUrl.data.length - 1) {
-          console.log('全部模型加载完毕')
-          router.replace({ name: 'menu' })
-          loadingProgress.value.progress = 100
-          resolve()
-        }
-      })
-    })
+      }
+      loadingProgress.value.progress = Number(progress.toFixed(2))
+    }
+    const GLTFOnError = (url: string) => {
+      console.log(`加载 Error`, url)
+    }
+    const GLTFOnLoaded = () => {
+      console.log('全部模型加载完毕')
+      router.replace({ name: 'menu' })
+      isLoading.value = false
+    }
+
+    const GLTFloadingManager = new LoadingManager(
+      GLTFOnLoaded,
+      GLTFOnProgress,
+      GLTFOnError
+    )
+
+    const GLTFLoaderIns = new GLTFLoader(GLTFloadingManager)
+
+    const modelUrl = await API.getModel()
+    modelUrl.data.forEach((url: string) =>
+      threeScene.loadModel(url, GLTFLoaderIns)
+    )
     return
   }
 
@@ -142,7 +155,7 @@ export const MainStore = defineStore('mainStore', () => {
   let animateId
   const animate = () => {
     animateId = requestAnimationFrame(animate)
-    if (loadingProgress.value.progress !== 100) return
+    if (isLoading.value) return
     // tweenJS.tween.update()
     // homePoints.update()
     threeScene.animate()
@@ -150,7 +163,6 @@ export const MainStore = defineStore('mainStore', () => {
 
   return {
     utilSet,
-    isMask,
     loadingProgress,
     init,
     animate,

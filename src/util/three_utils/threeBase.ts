@@ -25,7 +25,6 @@ export class ThreeBase {
   commonGUI!: GUI
   worldOctree = new Octree()
   three = THREE
-  loadingManager = new THREE.LoadingManager()
   axesHelper = new THREE.AxesHelper(5)
   constructor(
     public domElement: HTMLElement,
@@ -220,42 +219,26 @@ export class ThreeBase {
     // this.domElement.innerHTML = ''
     console.log('clearScene')
   }
-  loadModel = async (
-    modelUrl: string,
-    onDownloadProgress: OnDownloadProgress
-  ) => {
-    return new Promise<void>((resolve, reject) => {
-      new GLTFLoader(this.loadingManager).load(
-        modelUrl,
-        (gltf) => {
-          gltf.scene.traverse((obj: THREE.Object3D | THREE.Mesh) => {
-            if (obj.type === 'Mesh') {
-              obj.layers.enable(0)
-              obj.castShadow = true
-              obj.receiveShadow = true
-              ;(<any>obj).material.shadowSide = THREE.BackSide
-              ;(<any>obj).material.side = 0
-              if (obj.name === 'ground') {
-                this.worldOctree.fromGraphNode(obj)
-                obj.castShadow = false
-              }
-              if (obj.name === 'water') {
-                obj.receiveShadow = false
-              }
-            }
-          })
-          this.scene.add(gltf.scene)
 
-          this.loadingManager.onLoad = () => {
-            resolve()
+  loadModel = (modelUrl: string, GLTFLoaderIns: GLTFLoader) => {
+    GLTFLoaderIns.load(modelUrl, (gltf) => {
+      gltf.scene.traverse((obj: THREE.Object3D | THREE.Mesh) => {
+        if (obj.type === 'Mesh') {
+          obj.layers.enable(0)
+          obj.castShadow = true
+          obj.receiveShadow = true
+          ;(<any>obj).material.shadowSide = THREE.BackSide
+          ;(<any>obj).material.side = 0
+          if (obj.name === 'ground') {
+            this.worldOctree.fromGraphNode(obj)
+            obj.castShadow = false
           }
-        },
-        (xhr) => {
-          onDownloadProgress((xhr.loaded / xhr.total) * 100)
-          // console.log(xhr);
-          // console.log('加载完成的百分比'+()+'%')
+          if (obj.name === 'water') {
+            obj.receiveShadow = false
+          }
         }
-      )
+      })
+      this.scene.add(gltf.scene)
     })
   }
 }
