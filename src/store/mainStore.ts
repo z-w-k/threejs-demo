@@ -75,8 +75,8 @@ export const MainStore = defineStore('mainStore', () => {
     lockMouse()
     utilSet.value.threeScene = threeScene
     const resize = _.debounce(threeScene.onWindowResize, 100)
+    threeScene.useLoadModel()
     window.addEventListener('resize', resize)
-    loadModel()
   }
 
   const loadModel = async () => {
@@ -169,7 +169,9 @@ export const MainStore = defineStore('mainStore', () => {
     requestPointerLock,
     flyTo,
     onDownloadProgress,
-    pause
+    pause,
+    loadModel,
+    isLoading
   }
 })
 

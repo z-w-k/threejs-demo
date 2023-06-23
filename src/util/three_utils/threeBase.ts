@@ -9,6 +9,9 @@ import { GUI } from 'three/examples/jsm/libs/lil-gui.module.min'
 import { Octree } from 'three/examples/jsm/math/Octree'
 import { pinia } from '../../main'
 import { reject } from 'lodash'
+import router from '../../router'
+import { InitWaterModule } from './water/waterModule'
+import { InitSkyModule } from './sky/skyModule'
 
 let mainStore: ReturnType<typeof MainStore>
 export class ThreeBase {
@@ -26,6 +29,8 @@ export class ThreeBase {
   worldOctree = new Octree()
   three = THREE
   axesHelper = new THREE.AxesHelper(5)
+  waterModel!: THREE.Mesh
+
   constructor(
     public domElement: HTMLElement,
     public cameraConfig: CameraConfig
@@ -156,8 +161,8 @@ export class ThreeBase {
   initDir() {
     const directionalLight = new THREE.DirectionalLight(0xffffff, 6.4)
     directionalLight.castShadow = true
-    directionalLight.shadow.mapSize.width = 4096 // default
-    directionalLight.shadow.mapSize.height = 4096 // default
+
+    directionalLight.shadow.mapSize.set(2048, 2048)
 
     // 设置三维场景计算阴影的范围
     directionalLight.shadow.camera.left = -200
@@ -234,6 +239,7 @@ export class ThreeBase {
             obj.castShadow = false
           }
           if (obj.name === 'water') {
+            this.waterModel = obj as THREE.Mesh
             obj.receiveShadow = false
           }
         }

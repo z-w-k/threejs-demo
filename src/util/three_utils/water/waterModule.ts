@@ -11,13 +11,13 @@ export class InitWaterModule {
     public skyModule: InitSkyModule,
     public scene: THREE.Scene,
     public renderer: THREE.WebGLRenderer,
-    public gui: GUI
+    public gui: GUI,
+    public waterModel: THREE.Mesh
   ) {
     this.initWater()
   }
   initWater = () => {
-    const waterGeometry = new THREE.PlaneGeometry(110, 110)
-
+    const waterGeometry = new THREE.PlaneGeometry(100, 100)
     this.water = new Water(waterGeometry, {
       textureWidth: 1024,
       textureHeight: 1024,
@@ -27,8 +27,8 @@ export class InitWaterModule {
       sunDirection: new THREE.Vector3(),
       sunColor: 0xffffff,
       waterColor: 0x001e0f,
-      distortionScale: 3.7,
-      fog: this.scene.fog !== undefined
+      distortionScale: 1
+      // fog: this.scene.fog !== undefined
     })
     this.water.layers.enable(1)
 

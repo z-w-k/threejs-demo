@@ -9,6 +9,10 @@ import { InitOutlineModule } from './three_utils/post/outline/outline'
 
 import lmJPG from '../assets/img/lm.jpg'
 import rPNG from '../assets/img/R.png'
+import { MainStore } from '../store/mainStore'
+import router from '../router'
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
+import { API } from '../api/api'
 
 export interface CameraConfig {
   fov: number
@@ -18,7 +22,7 @@ export interface CameraConfig {
 class ThreeScene extends ThreeBase {
   bloomModule: InitBloomModule
   skyModule: InitSkyModule
-  waterModule: InitWaterModule
+  waterModule!: InitWaterModule
   fpsControls: FpsControls
   // outlineModule: InitOutlineModule
   // godRayModule: InitGodRayModule
@@ -39,7 +43,8 @@ class ThreeScene extends ThreeBase {
       worldOctree,
       controls,
       commonGUI,
-      dirLight
+      dirLight,
+      waterModel
     } = this
     this.bloomModule = new InitBloomModule(domElement, scene, camera, renderer)
     this.fpsControls = new FpsControls(
@@ -51,14 +56,21 @@ class ThreeScene extends ThreeBase {
       worldOctree
     )
     this.skyModule = new InitSkyModule(
-      scene,
-      camera,
-      renderer,
-      stats,
-      gui,
-      dirLight
+      this.scene,
+      this.camera,
+      this.renderer,
+      this.stats,
+      this.gui,
+      this.dirLight
     )
-    this.waterModule = new InitWaterModule(this.skyModule, scene, renderer, gui)
+
+    this.waterModule = new InitWaterModule(
+      this.skyModule,
+      this.scene,
+      this.renderer,
+      this.gui,
+      this.waterModel
+    )
     // this.godRayModule = new InitGodRayModule(scene, camera, renderer, this.gui)
     // this.outlineModule = new InitOutlineModule(scene, camera, renderer, gui)
     // this.initTest()
@@ -67,7 +79,39 @@ class ThreeScene extends ThreeBase {
     controls.target.set(0, 0, 0)
     controls.update()
   }
+  useLoadModel = async () => {
+    const mainStore = MainStore()
 
+    const GLTFOnProgress = (url: string, loaded: number, total: number) => {
+      const progress = (loaded / total) * 100
+      if (url.startsWith('/model')) {
+        const modelName = url.substring(url.lastIndexOf('/') + 1)
+        mainStore.loadingProgress.name = modelName
+      }
+      mainStore.loadingProgress.progress = Number(progress.toFixed(2))
+    }
+    const GLTFOnError = (url: string) => {
+      console.log(`加载 Error`, url)
+    }
+    const GLTFOnLoaded = () => {
+      console.log('全部模型加载完毕')
+
+      router.replace({ name: 'menu' })
+      mainStore.isLoading = false
+    }
+
+    const GLTFloadingManager = new THREE.LoadingManager(
+      GLTFOnLoaded,
+      GLTFOnProgress,
+      GLTFOnError
+    )
+
+    const GLTFLoaderIns = new GLTFLoader(GLTFloadingManager)
+
+    const modelUrl = await API.getModel()
+    modelUrl.data.forEach((url: string) => this.loadModel(url, GLTFLoaderIns))
+    return
+  }
   initTest() {
     {
       // const geo = new THREE.BufferGeometry()
