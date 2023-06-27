@@ -102,7 +102,7 @@ export class InitSkyModule {
       return
     }
     this.guiChanged()
-    this.dirLight.position.copy(this.sun).multiplyScalar(100)
+    this.dirLight.position.copy(this.sun).multiplyScalar(250)
   }, 0)
 
   animate = () => {

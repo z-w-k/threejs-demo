@@ -20,7 +20,7 @@ export class InitBloomModule {
   bloomIgnore = new Array() // 跟辉光光晕有关的变量
   bloomLayer = new THREE.Layers() // 跟辉光光晕有关的变量
   darkMaterial = new THREE.MeshBasicMaterial({
-    map: new THREE.Texture(),
+    map: new THREE.Texture()
   }) // 跟辉光光晕有关的变量
   constructor(
     public domElement: HTMLElement,
@@ -114,7 +114,7 @@ export class InitBloomModule {
     if (obj instanceof THREE.Scene) {
       // 此处忽略Scene，否则场景背景会被影响
       this.materials.scene = obj.background
-      obj.background = null
+      // obj.background = null
     }
     if (
       obj instanceof THREE.Sprite || // 此处忽略Sprite

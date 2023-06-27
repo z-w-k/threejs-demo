@@ -13,7 +13,7 @@ export default defineComponent({
           { text: '设置', pathName: 'setting' },
           { text: '返回主菜单', pathName: 'menu' }
         ],
-        class: 'w-[100%] h-[20%] hover:text-black  !text-2xl !font-black'
+        class: 'w-[100%] h-[30%] hover:text-black  !text-2xl !font-black'
       }
     ]
 

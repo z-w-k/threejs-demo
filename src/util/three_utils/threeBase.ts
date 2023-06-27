@@ -1,3 +1,4 @@
+import { FXAAShader } from 'three/examples/jsm/shaders/FXAAShader.js'
 import { MainStore, OnDownloadProgress } from './../../store/mainStore'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import { CameraConfig } from '../ThreeScene'
@@ -134,10 +135,11 @@ export class ThreeBase {
     renderer.setSize(domElement.clientWidth, domElement.clientHeight)
     renderer.toneMapping = THREE.ACESFilmicToneMapping
     renderer.toneMappingExposure = 0.5
-    this.commonGUI
-      .add(renderer, 'toneMappingExposure', 0, 10, 0.1)
-      .name('rendererToneMappingExposure')
+    // this.commonGUI
+    //   .add(renderer, 'toneMappingExposure', 0, 10, 0.1)
+    //   .name('rendererToneMappingExposure')
     renderer.shadowMap.enabled = true
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap
     renderer.domElement.className = 'threeScene'
     domElement.appendChild(renderer.domElement)
     return renderer
@@ -165,15 +167,20 @@ export class ThreeBase {
     directionalLight.shadow.mapSize.set(2048, 2048)
 
     // 设置三维场景计算阴影的范围
-    directionalLight.shadow.camera.left = -200
-    directionalLight.shadow.camera.right = 200
+    directionalLight.shadow.camera.left = -100
+    directionalLight.shadow.camera.right = 150
     directionalLight.shadow.camera.top = 200
     directionalLight.shadow.camera.bottom = -200
     directionalLight.shadow.camera.near = 0.5
-    directionalLight.shadow.camera.far = 500
-    directionalLight.shadow.radius = 0.5
-    directionalLight.shadow.bias = -0.00005
-    directionalLight.position.setY(10)
+    directionalLight.shadow.camera.far = 400
+    // directionalLight.shadow.radius = 0.2
+    directionalLight.shadow.bias = -0.0003
+    // directionalLight.position.setY(10)
+
+    const dirLightShadowHelper = new THREE.CameraHelper(
+      directionalLight.shadow.camera
+    )
+    this.scene.add(dirLightShadowHelper)
 
     const dirLightFolder = this.commonGUI.addFolder('dirLight')
     dirLightFolder

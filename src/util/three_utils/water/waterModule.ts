@@ -17,10 +17,10 @@ export class InitWaterModule {
     this.initWater()
   }
   initWater = () => {
-    const waterGeometry = new THREE.PlaneGeometry(100, 100)
+    const waterGeometry = new THREE.PlaneGeometry(120, 120)
     this.water = new Water(waterGeometry, {
-      textureWidth: 1024,
-      textureHeight: 1024,
+      textureWidth: 512,
+      textureHeight: 512,
       waterNormals: new THREE.TextureLoader().load(img, function (texture) {
         texture.wrapS = texture.wrapT = THREE.RepeatWrapping
       }),

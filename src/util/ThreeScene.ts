@@ -13,7 +13,7 @@ import { MainStore } from '../store/mainStore'
 import router from '../router'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 import { API } from '../api/api'
-
+import { Reflector } from 'three/examples/jsm/objects/Reflector.js'
 export interface CameraConfig {
   fov: number
   near: number
@@ -79,39 +79,6 @@ class ThreeScene extends ThreeBase {
     controls.target.set(0, 0, 0)
     controls.update()
   }
-  useLoadModel = async () => {
-    const mainStore = MainStore()
-
-    const GLTFOnProgress = (url: string, loaded: number, total: number) => {
-      const progress = (loaded / total) * 100
-      if (url.startsWith('/model')) {
-        const modelName = url.substring(url.lastIndexOf('/') + 1)
-        mainStore.loadingProgress.name = modelName
-      }
-      mainStore.loadingProgress.progress = Number(progress.toFixed(2))
-    }
-    const GLTFOnError = (url: string) => {
-      console.log(`加载 Error`, url)
-    }
-    const GLTFOnLoaded = () => {
-      console.log('全部模型加载完毕')
-
-      router.replace({ name: 'menu' })
-      mainStore.isLoading = false
-    }
-
-    const GLTFloadingManager = new THREE.LoadingManager(
-      GLTFOnLoaded,
-      GLTFOnProgress,
-      GLTFOnError
-    )
-
-    const GLTFLoaderIns = new GLTFLoader(GLTFloadingManager)
-
-    const modelUrl = await API.getModel()
-    modelUrl.data.forEach((url: string) => this.loadModel(url, GLTFLoaderIns))
-    return
-  }
   initTest() {
     {
       // const geo = new THREE.BufferGeometry()
@@ -161,17 +128,39 @@ class ThreeScene extends ThreeBase {
       // lineTexture.offset.y = 0.5
       // lineTexture.offset.x = -0.5
       // lineTexture.rotation = Math.PI / 6
-      // lineTexture.repeat.set(2, 2)
-      // lineTexture.wrapS = THREE.MirroredRepeatWrapping
-      // lineTexture.wrapT = THREE.RepeatWrapping
-      const cubeGeometry = new THREE.BoxGeometry(1, 1, 1)
-      const Material = new THREE.MeshBasicMaterial({
+      lineTexture.repeat.set(16, 16)
+      lineTexture.wrapS = THREE.RepeatWrapping
+      lineTexture.wrapT = THREE.RepeatWrapping
+      const cubeGeometry = new THREE.SphereGeometry(3, 30, 30)
+      const Material = new THREE.MeshStandardMaterial({
         color: '#fff',
-        map: lineTexture
+        map: lineTexture,
+        metalness: 0.7,
+        roughness: 0.1
       })
       const cube = new THREE.Mesh(cubeGeometry, Material)
-      console.log(lineTexture)
+      cube.castShadow = true
+      cube.position.setY(-5)
+      cube.position.setX(-5)
       this.scene.add(cube)
+
+      const planeGeo = new THREE.PlaneGeometry(10, 10)
+      const planeMat = new THREE.MeshStandardMaterial({
+        color: '#fff',
+        roughness: 0,
+        metalness: 1
+      })
+      const plane = new Reflector(planeGeo, {
+        clipBias: 0.003,
+        textureWidth: window.innerWidth * window.devicePixelRatio,
+        textureHeight: window.innerHeight * window.devicePixelRatio,
+        color: 0xb5b5b5
+      })
+      plane.layers.enable(1)
+      plane.rotation.x = -Math.PI / 2
+      plane.position.y = -5
+      plane.position.x = -5
+      this.scene.add(plane)
     }
   }
 
@@ -196,19 +185,24 @@ class ThreeScene extends ThreeBase {
     playerCollider.start.y -= 0.6
   }
   enterOrbit = () => {
+    const cwd = new THREE.Vector3()
+    this.camera.getWorldDirection(cwd)
+    const cp = this.camera.position
+    this.controls.target.copy(cwd.multiplyScalar(5).add(cp))
+
+    // {
+    //   this.controls.target.copy(this.dirLight.position)
+    // this.camera.position.copy(this.dirLight.position).multiplyScalar(2)
+    // }
+    this.controls.update()
     this.fpsStatus = false
-    // const cwd = new THREE.Vector3()
-    // this.camera.getWorldDirection(cwd)
-    // const cp = this.camera.position
-    // const tar: [number, number, number] = [
-    //   cp.x + cwd.x,
-    //   cp.y + cwd.y,
-    //   cp.z + cwd.z
-    // ]
-    // this.controls.target.set(...tar)
-    // this.controls.update()
-    this.controlsStatus = true
     this.controls.enabled = true
+    this.controlsStatus = true
+  }
+  pause = () => {
+    this.fpsStatus = false
+    this.controls.enabled = false
+    this.controlsStatus = false
   }
 
   animate = () => {
@@ -221,6 +215,7 @@ class ThreeScene extends ThreeBase {
       (this.controls.update(),
       this.axesHelper.position.copy(this.controls.target))
     this.waterModule.animate()
+    // this.renderer.render(this.scene, this.camera)
     this.bloomModule.animate()
   }
 }
