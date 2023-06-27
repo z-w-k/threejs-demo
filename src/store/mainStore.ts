@@ -3,8 +3,11 @@ import HomePoints from '../util/homePoints'
 import TweenJS from '../util/tween'
 import { LoadingManager, Vector3 } from 'three'
 import TemperatureField from '../util/temperature'
-import _ from 'lodash'
+import _, { reject } from 'lodash'
 import { API } from '../api/api'
+import Dexie from 'dexie'
+import { DataInfo, InitIndexDB, ModelInfo } from '../util/indexDB'
+import { AxiosResponse } from 'axios'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 
 interface UtilSet {
@@ -63,7 +66,7 @@ export const MainStore = defineStore('mainStore', () => {
     points: new FlyToPosition([0, -1000, 0], [0, -1000, 20], [1, 1])
   })
 
-  const init = (homeContainer: HTMLElement) => {
+  const init = async (homeContainer: HTMLElement) => {
     threeScene = new ThreeScene(homeContainer, {
       fov: 60,
       near: 0.1,
@@ -77,9 +80,28 @@ export const MainStore = defineStore('mainStore', () => {
     const resize = _.debounce(threeScene.onWindowResize, 100)
     threeScene.useLoadModel()
     window.addEventListener('resize', resize)
+
+    const modelRequestUrl = (await API.getModel()).data
+    const modelData: Array<DataInfo> = []
+
+    for (let url of modelRequestUrl) {
+      modelData.push({
+        url: url,
+        data: null
+      })
+    }
+
+    const modelDataBase = {
+      dbName: 'three_model',
+      dbVer: 1,
+      stores: modelData
+    }
+    // await Promise.all(modelDataPromise)
+    const modelDB = new InitIndexDB(modelDataBase, loadModel)
+    return
   }
 
-  const loadModel = async () => {
+  const loadModel = async (modelSet: DataInfo[]) => {
     const GLTFOnProgress = (url: string, loaded: number, total: number) => {
       const progress = (loaded / total) * 100
       if (url.startsWith('/model')) {
@@ -105,13 +127,15 @@ export const MainStore = defineStore('mainStore', () => {
 
     const GLTFLoaderIns = new GLTFLoader(GLTFloadingManager)
 
-    const modelUrl = await API.getModel()
-    modelUrl.data.forEach((url: string) =>
-      threeScene.loadModel(url, GLTFLoaderIns)
-    )
+    modelSet.forEach(async (model, urlInd: number) => {
+      console.log(model.url)
+      const modelData = URL.createObjectURL(model.data!)
+      const modelName = model.url.substring(model.url.lastIndexOf('/') + 1)
+      loadingProgress.value.name = modelName
+      await threeScene.loadModel(modelData, GLTFLoaderIns)
+    })
     return
   }
-
   const lockMouse = () => {
     document.addEventListener('pointerlockchange', (e) => {
       if (document.pointerLockElement) {
@@ -132,10 +156,6 @@ export const MainStore = defineStore('mainStore', () => {
 
       next()
     })
-  }
-
-  const onDownloadProgress: OnDownloadProgress = (e) => {
-    loadingProgress.value.progress = Number(e.toFixed(2))
   }
 
   const flyTo = (positionName: keyof ScenePosition) => {
@@ -168,7 +188,6 @@ export const MainStore = defineStore('mainStore', () => {
     animate,
     requestPointerLock,
     flyTo,
-    onDownloadProgress,
     pause,
     loadModel,
     isLoading

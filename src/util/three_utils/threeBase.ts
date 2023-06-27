@@ -225,8 +225,8 @@ export class ThreeBase {
     console.log('clearScene')
   }
 
-  loadModel = (modelUrl: string, GLTFLoaderIns: GLTFLoader) => {
-    GLTFLoaderIns.load(modelUrl, (gltf) => {
+  loadModel = (modelData: string, GLTFLoaderIns: GLTFLoader) => {
+    GLTFLoaderIns.load(modelData, (gltf) => {
       gltf.scene.traverse((obj: THREE.Object3D | THREE.Mesh) => {
         if (obj.type === 'Mesh') {
           obj.layers.enable(0)

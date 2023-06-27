@@ -11,7 +11,9 @@ export default defineComponent({
       {
         name: '亮度',
         key: 'intensity',
-        value: (mainStore.utilSet.threeScene?.light as any) || { intensity: 0 }
+        value: (mainStore.utilSet.threeScene?.AmbLight as any) || {
+          intensity: 0
+        }
       }
     ])
     return {

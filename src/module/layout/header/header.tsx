@@ -2,7 +2,6 @@ import { Vector3 } from 'three'
 import ButtonList, { TagList } from '../../utils/menuButton'
 import { MainStore, flyToPosition } from '../../../store/mainStore'
 
-
 export default defineComponent({
   setup(props, { emit }) {
     const mainStore = MainStore()
@@ -10,18 +9,21 @@ export default defineComponent({
     let tagList: TagList[] = [
       {
         textList: [
-          { text: '热力图', path: '/heatMap' },
-          { text: '粒子系统', path: '/points' },
-          { text: '实现中...', path: '' },
-          { text: '实现中...', path: '' }
+          { text: '热力图', pathName: '/heatMap' },
+          { text: '粒子系统', pathName: '/points' },
+          { text: '实现中...', pathName: '' },
+          { text: '实现中...', pathName: '' }
         ],
         class:
           '!w-[23%] !h-[50%] hover:!bg-[#fff] hover:!text-black hover:!h-[60%]'
       },
       {
         textList: [
-          { text: '...', path: '' },
-          { text: '仓库地址', path: 'https://github.com/1099571219/threejs-demo' }
+          { text: '...', pathName: '' },
+          {
+            text: '仓库地址',
+            pathName: 'https://github.com/1099571219/threejs-demo'
+          }
         ],
         class: `!w-[45%] !h-[70%] !bg-[#0df6ff] hover:!bg-pink-400 !text-black hover:!h-[80%]`
       }
@@ -38,7 +40,8 @@ export default defineComponent({
           onClick={clickIcon}
           class={
             'absolute w-[5vh] h-[5vh] hover:h-[6vh] hover:w-[6vh] transition-all ease-in-out duration-500 hover:translate-x-[20%] '
-          }/>
+          }
+        />
       )
     }
     const iconContainer = () => {
