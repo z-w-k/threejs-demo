@@ -1,20 +1,24 @@
-import axios from "axios";
+import axios from 'axios'
 
 const request = axios.create({
-    timeout:1000*5,
-    
+  timeout: 1000 * 600
 })
-request.interceptors.request.use((config)=>{
+request.interceptors.request.use(
+  (config) => {
     return config
-},err=>{
+  },
+  (err) => {
     return Promise.reject(err)
-})
+  }
+)
 
-request.interceptors.response.use(response=>{
-
+request.interceptors.response.use(
+  (response) => {
     return response
-},err=>{
+  },
+  (err) => {
     return Promise.reject(err)
-})
+  }
+)
 
 export default request
